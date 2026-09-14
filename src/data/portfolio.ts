@@ -3,8 +3,8 @@ import type { Project, SkillGroup, LearningItem, PersonalInfo } from '../types'
 export const personalInfo: PersonalInfo = {
   name: 'Jhon Alejandro Escobar Lozada',
   handle: 'melokaso1',
-  roles: ['BACKEND_DEVELOPER', 'PYTHON_DEV', 'C#_ENGINEER', 'DATABASE_ARCHITECT'],
-  bio: '18-year-old backend developer from Bogotá, based in Floridablanca, Santander. Focused on building robust systems, APIs, databases and scalable server-side logic.',
+  roles: ['BACKEND_DEVELOPER', '.NET_ENGINEER', 'CLEAN_ARCHITECTURE', 'REACT_DEV'],
+  bio: 'Backend-focused developer from Floridablanca, Santander. Building APIs, databases and full-stack systems with C#/.NET, Clean Architecture, PostgreSQL and React.',
   email: 'jhonalejoescobar@gmail.com',
   github: 'https://github.com/melokaso1',
   linkedin: 'https://www.linkedin.com/in/alejandro-escobar-9b7590365',
@@ -13,95 +13,167 @@ export const personalInfo: PersonalInfo = {
 
 export const backendProjects: Project[] = [
   {
-    id: 'ligabetplay',
-    title: 'ligaBetplay_C#',
-    description: 'Liga Betplay management system built in C# with OOP architecture',
-    tech: ['C#', 'OOP', '.NET'],
-    githubUrl: 'https://github.com/melokaso1/ligaBetplay_C-',
+    id: 'nexus-odonto',
+    title: 'Nexus Odonto',
+    description:
+      'Dental clinic platform (team project — contributor): appointments, patients, RBAC roles, Oracle persistence, Docker deploy and an AI chatbot. Code lives under the NexusOdonto org (private); public docs + live demo available.',
+    tech: ['C#', '.NET', 'Oracle', 'React', 'Docker', 'AI Chatbot', 'JWT'],
+    githubUrl: 'https://github.com/NexusOdonto/NexusOdonto_documentation',
+    liveUrl: 'https://nexusodonto.chatcampuslands.com/',
+    extraLinks: [
+      { label: 'ORG', url: 'https://github.com/NexusOdonto' },
+    ],
+    featured: true,
+    contributor: true,
     category: 'backend',
   },
   {
-    id: 'csharp-exercises',
-    title: 'taller-CSharp-32-ejercicios',
-    description: '32 C# exercises covering core language concepts and OOP',
-    tech: ['C#'],
-    githubUrl: 'https://github.com/melokaso1/taller-CSharp-32-ejercicios',
+    id: 'healtlab-backend',
+    title: 'HealtLab — API',
+    description:
+      'Medical appointment system with Clean Architecture: patients, clinical records, RBAC, JWT auth and real-time SignalR notifications. Team project on PostgreSQL/Supabase.',
+    tech: ['C#', '.NET', 'EF Core', 'PostgreSQL', 'JWT', 'SignalR', 'Clean Architecture'],
+    githubUrl: 'https://github.com/melokaso1/HEALTLABS_BACKEND',
+    extraLinks: [
+      { label: 'FRONTEND', url: 'https://github.com/melokaso1/HEALTLAB_FRONTEND' },
+    ],
+    featured: true,
     category: 'backend',
   },
   {
-    id: 'inmobiliaria',
-    title: 'mysql2-proyecto-inmobiliaria',
-    description: 'Real estate database project with advanced MySQL queries',
-    tech: ['MySQL', 'SQL', 'Stored Procedures'],
-    githubUrl: 'https://github.com/melokaso1/mysql2-proyecto-inmobiliaria',
+    id: 'el-plonsazo-backend',
+    title: 'Smart Inventory — API',
+    description:
+      'Hexagonal .NET API for inventory, sales, dispatch and invoicing. JWT roles, EF Core + PostgreSQL, and a proxy to an AI chatbot microservice.',
+    tech: ['C#', '.NET', 'EF Core', 'PostgreSQL', 'Docker', 'Hexagonal', 'JWT'],
+    githubUrl: 'https://github.com/melokaso1/InteligentInventoryBackend',
+    extraLinks: [
+      { label: 'FRONTEND', url: 'https://github.com/melokaso1/InteligentInventoryFrontend' },
+      { label: 'CHATBOT', url: 'https://github.com/melokaso1/InteligentInventoryLLMChatBot' },
+    ],
+    featured: true,
     category: 'backend',
   },
   {
-    id: 'clinica-db',
-    title: 'mysql_clinica_database',
-    description: 'Clinical database system exam with complex queries and relations',
-    tech: ['MySQL', 'SQL'],
-    githubUrl: 'https://github.com/melokaso1/mysql_clinica_database',
+    id: 'el-plonsazo-chatbot',
+    title: 'Smart Inventory — AI Chatbot',
+    description:
+      'Conversational inventory assistant with FastAPI + LangGraph: stock queries, product search and guided purchase flow wired to the .NET API.',
+    tech: ['Python', 'FastAPI', 'LangGraph', 'LangChain', 'httpx', 'pytest'],
+    githubUrl: 'https://github.com/melokaso1/InteligentInventoryLLMChatBot',
+    featured: true,
     category: 'backend',
   },
   {
-    id: 'examen-backend',
-    title: 'examen_intro_backend',
-    description: 'Backend intro exam with server-side logic implementation',
-    tech: ['Python', 'Backend'],
-    githubUrl: 'https://github.com/melokaso1/examen_intro_backend_Escobar_Alejandro',
+    id: 'gestion-mecanica',
+    title: 'Gestión de Taller Automotriz',
+    description:
+      'Workshop management platform: clients, vehicles, service orders and billing. ASP.NET API + Blazor WASM + WPF desktop host with JWT roles.',
+    tech: ['C#', '.NET', 'EF Core', 'PostgreSQL', 'Blazor', 'WPF', 'JWT'],
+    githubUrl: 'https://github.com/melokaso1/Proyecto-EFCORE-gestion-mecanica',
+    featured: true,
     category: 'backend',
   },
   {
     id: 'agendabot',
     title: 'AgendaBot IA',
-    description: 'Telegram bot for task and appointment management using n8n + Google Sheets',
+    description:
+      'Telegram bot for appointments, habits and reminders using n8n + Google Sheets — no paid AI services required.',
     tech: ['Python', 'n8n', 'Telegram API', 'Google Sheets'],
     githubUrl: 'https://github.com/melokaso1/Proyecto_IA_Nivel1_EscobarAlejandro_Medina_Tomas',
     category: 'backend',
   },
   {
+    id: 'transporte-migrations',
+    title: 'Transporte — DB Migrations',
+    description:
+      'Transport domain modeled with EF Core migrations and structured persistence in C#.',
+    tech: ['C#', 'EF Core', 'Migrations'],
+    githubUrl: 'https://github.com/melokaso1/Transporte_db_migrations',
+    category: 'backend',
+  },
+  {
     id: 'coworking',
     title: 'Gestor de Coworking',
-    description: 'Coworking space reservation and scheduling system',
+    description:
+      'Coworking room reservation and scheduling system built in Python.',
     tech: ['Python'],
     githubUrl: 'https://github.com/melokaso1/Gestor-de-Reservas-de-Salas-de-Coworking-Python-Edition-',
+    category: 'backend',
+  },
+  {
+    id: 'cuentas-bancarias',
+    title: 'Gestión de Cuentas Bancarias',
+    description:
+      'Bank account management system with JSON as persistence layer.',
+    tech: ['Python', 'JSON Storage', 'OOP'],
+    githubUrl: 'https://github.com/melokaso1/gestion_cuentas_bancarias_json',
     category: 'backend',
   },
 ]
 
 export const frontendProjects: Project[] = [
   {
-    id: 'dataset-editor',
-    title: 'datasetEditorApp',
-    description: 'Dataset editor with dynamic API connection',
-    tech: ['JavaScript', 'APIs'],
-    githubUrl: 'https://github.com/melokaso1/datasetEditorApp',
+    id: 'healtlab-frontend',
+    title: 'HealtLab — Frontend',
+    description:
+      'Clinical SPA for appointments, patients, staff and reports. Role-based portals with JWT and live SignalR notifications.',
+    tech: ['React 19', 'TypeScript', 'Vite', 'React Router', 'SignalR'],
+    githubUrl: 'https://github.com/melokaso1/HEALTLAB_FRONTEND',
+    extraLinks: [
+      { label: 'BACKEND', url: 'https://github.com/melokaso1/HEALTLABS_BACKEND' },
+    ],
+    featured: true,
+    category: 'frontend',
+  },
+  {
+    id: 'el-plonsazo-frontend',
+    title: 'Smart Inventory — ERP Frontend',
+    description:
+      'Admin ERP panel: dashboard, catalog, inventory, sales, invoices and AI chatbot. Real JWT auth with Admin/Client roles.',
+    tech: ['React 19', 'TypeScript', 'Vite', 'Tailwind CSS', 'React Router'],
+    githubUrl: 'https://github.com/melokaso1/InteligentInventoryFrontend',
+    extraLinks: [
+      { label: 'BACKEND', url: 'https://github.com/melokaso1/InteligentInventoryBackend' },
+    ],
+    featured: true,
+    category: 'frontend',
+  },
+  {
+    id: 'luxtime',
+    title: 'LuxTime — Luxury Watches',
+    description:
+      'Luxury watch e-commerce landing with polished UI and responsive layout.',
+    tech: ['HTML5', 'CSS3', 'JavaScript', 'Tailwind'],
+    githubUrl: 'https://github.com/melokaso1/proyecto_luxTime',
+    liveUrl: 'https://luxtime-luxury.netlify.app/',
     category: 'frontend',
   },
   {
     id: 'abc-lms',
     title: 'ABC-LMS',
-    description: 'LMS web platform for learning management',
+    description:
+      'Learning management web platform for courses and student workflows.',
     tech: ['JavaScript', 'HTML5', 'CSS3'],
     githubUrl: 'https://github.com/melokaso1/ABC-LMS',
     category: 'frontend',
   },
   {
-    id: 'liga-betplay-js',
-    title: 'ligaBetplay JS',
-    description: 'Web about Colombian football league FPC teams',
-    tech: ['JavaScript', 'HTML5', 'CSS3'],
-    githubUrl: 'https://github.com/melokaso1/ligaBetplay',
+    id: 'dataset-editor',
+    title: 'Dataset Editor',
+    description:
+      'Dataset editor with dynamic API connection for browsing and editing records.',
+    tech: ['JavaScript', 'APIs'],
+    githubUrl: 'https://github.com/melokaso1/datasetEditorApp',
     category: 'frontend',
   },
   {
-    id: 'luxtime',
-    title: 'LuxTime - Luxury Watches',
-    description: 'E-commerce luxury watch site',
-    tech: ['HTML5', 'CSS3', 'JavaScript', 'Tailwind'],
-    githubUrl: 'https://github.com/melokaso1/proyecto_luxTime',
-    liveUrl: 'https://luxtime-luxury.netlify.app/',
+    id: 'liga-betplay-js',
+    title: 'Liga Betplay — Equipos FPC',
+    description:
+      'Web showcase of Colombian FPC / Liga Betplay teams.',
+    tech: ['JavaScript', 'HTML5', 'CSS3'],
+    githubUrl: 'https://github.com/melokaso1/ligaBetplay',
     category: 'frontend',
   },
 ]
@@ -109,27 +181,27 @@ export const frontendProjects: Project[] = [
 export const skillGroups: SkillGroup[] = [
   {
     category: 'BACKEND',
-    skills: ['Python', 'C#', 'Node.js'],
+    skills: ['C#', '.NET', 'Python', 'Node.js', 'FastAPI'],
     color: 'green',
   },
   {
     category: 'DATABASES',
-    skills: ['MySQL', 'JSON Storage'],
+    skills: ['PostgreSQL', 'Oracle', 'MySQL', 'EF Core', 'JSON Storage'],
     color: 'green',
   },
   {
-    category: 'CONCEPTS',
-    skills: ['OOP', 'SOLID', 'REST', 'File I/O', 'Data Modeling', 'Git Flow'],
+    category: 'ARCHITECTURE',
+    skills: ['Clean Architecture', 'Hexagonal', 'REST', 'JWT', 'RBAC', 'SignalR'],
     color: 'green',
   },
   {
     category: 'FRONTEND',
-    skills: ['HTML5', 'CSS3', 'JavaScript', 'TypeScript', 'React', 'Tailwind CSS'],
+    skills: ['React', 'TypeScript', 'JavaScript', 'Blazor', 'Tailwind CSS', 'Vite'],
     color: 'cyan',
   },
   {
     category: 'TOOLS',
-    skills: ['Git', 'GitHub', 'VS Code', 'Cursor', 'Netlify', 'Warp Terminal'],
+    skills: ['Git', 'GitHub', 'Docker', 'pnpm', 'VS Code', 'Cursor', 'n8n'],
     color: 'cyan',
   },
   {
@@ -141,39 +213,39 @@ export const skillGroups: SkillGroup[] = [
 
 export const learningItems: LearningItem[] = [
   {
+    id: 'dotnet',
+    title: 'C# & .NET',
+    subtitle: 'CLEAN_HEXAGONAL_APIS',
+    status: 'completed',
+  },
+  {
+    id: 'efcore',
+    title: 'EF Core & PostgreSQL',
+    subtitle: 'MIGRATIONS_PERSISTENCE',
+    status: 'completed',
+  },
+  {
+    id: 'react-ts',
+    title: 'React & TypeScript',
+    subtitle: 'SPA_ERP_CLINICAL',
+    status: 'completed',
+  },
+  {
+    id: 'fastapi-langgraph',
+    title: 'FastAPI & LangGraph',
+    subtitle: 'AI_CHATBOT_FLOWS',
+    status: 'completed',
+  },
+  {
     id: 'nodejs',
     title: 'Node.js & Express',
     subtitle: 'REST_APIS',
     status: 'in-progress',
   },
   {
-    id: 'csharp-net',
-    title: 'C# & .NET',
-    subtitle: 'OOP_SYSTEMS',
-    status: 'in-progress',
-  },
-  {
-    id: 'mysql-adv',
-    title: 'MySQL Advanced',
-    subtitle: 'PROCEDURES_TRIGGERS',
-    status: 'in-progress',
-  },
-  {
-    id: 'react-ts',
-    title: 'React & TypeScript',
-    subtitle: 'FRONTEND_LAYER',
-    status: 'in-progress',
-  },
-  {
-    id: 'gitflow',
-    title: 'Git Flow & DevOps',
-    subtitle: 'DEPLOYMENT',
-    status: 'in-progress',
-  },
-  {
-    id: 'tailwind',
-    title: 'Tailwind CSS v4',
-    subtitle: 'MODERN_STYLING',
+    id: 'devops',
+    title: 'Docker & DevOps',
+    subtitle: 'DEPLOYMENT_PIPELINES',
     status: 'in-progress',
   },
 ]

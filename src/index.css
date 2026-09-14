@@ -22,24 +22,38 @@
     position: relative;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
   }
 
+  /* CRT scanlines */
   body::after {
     content: '';
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background-image: repeating-linear-gradient(
       0deg,
-      rgba(6, 182, 212, 0.02),
-      rgba(6, 182, 212, 0.02) 1px,
+      rgba(6, 182, 212, 0.035),
+      rgba(6, 182, 212, 0.035) 1px,
       transparent 1px,
-      transparent 2px
+      transparent 3px
     );
     pointer-events: none;
-    z-index: 1;
+    z-index: 40;
+    mix-blend-mode: overlay;
+  }
+
+  /* Soft vignette */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 40%,
+      rgba(2, 6, 23, 0.55) 100%
+    );
+    pointer-events: none;
+    z-index: 39;
   }
 }
 
@@ -61,18 +75,14 @@
 }
 
 @keyframes blink {
-  0%, 49% {
-    opacity: 1;
-  }
-  50%, 100% {
-    opacity: 0;
-  }
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
 }
 
 @keyframes fadeIn {
   0% {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(12px);
   }
   100% {
     opacity: 1;
@@ -80,17 +90,61 @@
   }
 }
 
+@keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+    box-shadow: 0 0 6px rgba(34, 197, 94, 0.35);
   }
   50% {
-    box-shadow: 0 0 20px rgba(34, 197, 94, 0.8);
+    box-shadow: 0 0 14px rgba(34, 197, 94, 0.7);
+  }
+}
+
+@keyframes led-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+@keyframes flicker {
+  0%, 95%, 100% { opacity: 1; }
+  96% { opacity: 0.92; }
+  97% { opacity: 1; }
+  98% { opacity: 0.88; }
+}
+
+@keyframes type-caret {
+  0%, 49% { border-color: var(--green); }
+  50%, 100% { border-color: transparent; }
+}
+
+@keyframes slideIn {
+  0%, 100% { width: 0%; }
+  50% { width: 100%; }
+}
+
+@keyframes boot-line {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
 .fade-in {
-  animation: fadeIn 0.6s ease-out forwards;
+  animation: fadeIn 0.55s ease-out forwards;
 }
 
 .cursor {
@@ -103,4 +157,70 @@
 
 .glow-cyan {
   text-shadow: 0 0 10px rgba(6, 182, 212, 0.6);
+}
+
+.crt-flicker {
+  animation: flicker 6s infinite;
+}
+
+.led-pulse {
+  animation: led-pulse 1.6s ease-in-out infinite;
+}
+
+.term-window {
+  transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+
+.term-window:hover {
+  transform: translateY(-2px);
+}
+
+.term-window-green:hover {
+  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.35), 0 8px 28px rgba(34, 197, 94, 0.12);
+}
+
+.term-window-cyan:hover {
+  box-shadow: 0 0 0 1px rgba(6, 182, 212, 0.35), 0 8px 28px rgba(6, 182, 212, 0.12);
+}
+
+/* Section / child reveals */
+.term-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+.term-reveal.is-visible {
+  animation: fadeIn 0.55s ease-out forwards;
+}
+
+.term-stagger > * {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.term-stagger.is-visible > * {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.term-stagger.is-visible > *:nth-child(1) { animation-delay: 0.04s; }
+.term-stagger.is-visible > *:nth-child(2) { animation-delay: 0.1s; }
+.term-stagger.is-visible > *:nth-child(3) { animation-delay: 0.16s; }
+.term-stagger.is-visible > *:nth-child(4) { animation-delay: 0.22s; }
+.term-stagger.is-visible > *:nth-child(5) { animation-delay: 0.28s; }
+.term-stagger.is-visible > *:nth-child(6) { animation-delay: 0.34s; }
+.term-stagger.is-visible > *:nth-child(7) { animation-delay: 0.4s; }
+.term-stagger.is-visible > *:nth-child(8) { animation-delay: 0.46s; }
+.term-stagger.is-visible > *:nth-child(9) { animation-delay: 0.52s; }
+.term-stagger.is-visible > *:nth-child(10) { animation-delay: 0.58s; }
+.term-stagger.is-visible > *:nth-child(11) { animation-delay: 0.64s; }
+.term-stagger.is-visible > *:nth-child(12) { animation-delay: 0.7s; }
+
+.boot-line {
+  opacity: 0;
+  animation: boot-line 0.35s ease-out forwards;
+}
+
+.status-bar {
+  backdrop-filter: blur(6px);
+  background: rgba(10, 14, 39, 0.88);
 }

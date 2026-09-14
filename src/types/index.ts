@@ -1,3 +1,8 @@
+export interface ProjectLink {
+  label: string
+  url: string
+}
+
 export interface Project {
   id: string
   title: string
@@ -5,6 +10,10 @@ export interface Project {
   tech: string[]
   githubUrl: string
   liveUrl?: string
+  extraLinks?: ProjectLink[]
+  featured?: boolean
+  /** True when you contributed but do not own the repo */
+  contributor?: boolean
   category: 'backend' | 'frontend'
 }
 
