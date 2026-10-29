@@ -6,8 +6,8 @@ const githubHandle = personalInfo.github.replace(/^https?:\/\/(www\.)?github\.co
 const linkedinHandle = personalInfo.linkedin.replace(/^https?:\/\/(www\.)?linkedin\.com\//, '')
 
 const channels = [
-  { label: 'LinkedIn', detail: `linkedin.com/${linkedinHandle}`, url: personalInfo.linkedin, hint: 'Best way to reach me' },
-  { label: 'GitHub', detail: `github.com/${githubHandle}`, url: personalInfo.github, hint: 'Code and repositories' },
+  { label: 'LinkedIn', detail: `linkedin.com/${linkedinHandle}`, url: personalInfo.linkedin, hint: 'La mejor forma de contactarme' },
+  { label: 'GitHub', detail: `github.com/${githubHandle}`, url: personalInfo.github, hint: 'Código y repositorios' },
 ]
 </script>
 
@@ -16,8 +16,8 @@ const channels = [
     <SectionHeading
       id="contact"
       command="./connect.sh"
-      title="Contact"
-      description="Open to opportunities and collaborations. Send me a message on LinkedIn."
+      title="Contacto"
+      description="Abierto a oportunidades y colaboraciones. Escríbeme por LinkedIn."
     />
 
     <ul class="grid gap-4 sm:grid-cols-2">
@@ -34,7 +34,7 @@ const channels = [
             <span class="mt-1 block text-xs text-muted">{{ c.hint }}</span>
           </span>
           <span class="text-muted transition-transform duration-200 group-hover:translate-x-1 group-hover:text-green" aria-hidden="true">↗</span>
-          <span class="sr-only"> (opens in a new tab)</span>
+          <span class="sr-only"> (se abre en una pestaña nueva)</span>
         </a>
       </li>
     </ul>

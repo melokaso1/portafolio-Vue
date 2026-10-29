@@ -55,8 +55,9 @@ onBeforeUnmount(() => window.clearTimeout(timer))
       <p class="font-mono text-sm text-muted">
         <span class="text-green">~$</span> whoami
       </p>
-      <h1 id="hero-title" class="mt-4 max-w-3xl text-4xl font-bold leading-tight tracking-tight text-text sm:text-5xl md:text-6xl">
-        {{ personalInfo.name }}
+      <p class="mt-4 text-lg font-medium text-text/85 md:text-xl">{{ personalInfo.name }}</p>
+      <h1 id="hero-title" class="mt-2 max-w-3xl text-4xl font-bold leading-tight tracking-tight text-text sm:text-5xl md:text-6xl">
+        {{ personalInfo.headline }}
       </h1>
 
       <p class="mt-5 font-mono text-lg text-cyan md:text-xl" aria-hidden="true">
@@ -69,8 +70,10 @@ onBeforeUnmount(() => window.clearTimeout(timer))
       </p>
 
       <div class="mt-9 flex flex-col gap-3 sm:flex-row">
-        <a href="#projects" class="btn btn-primary justify-center">View projects</a>
-        <a href="#contact" class="btn btn-ghost justify-center">Contact</a>
+        <a href="#services" class="btn btn-primary justify-center">Trabaja conmigo</a>
+        <a :href="personalInfo.linkedin" target="_blank" rel="noopener noreferrer" class="btn btn-ghost justify-center">
+          CV / LinkedIn <span aria-hidden="true">↗</span><span class="sr-only"> (se abre en una pestaña nueva)</span>
+        </a>
       </div>
 
       <p class="mt-14 flex items-center gap-2 font-mono text-xs text-muted">

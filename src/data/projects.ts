@@ -1,126 +1,103 @@
 import type { LeadershipItem, OtherWork, Project } from '@/types'
 
 /**
- * Proyectos del portafolio. Único archivo a editar para cambiar textos.
+ * Proyectos del portafolio en formato caso de estudio. Único archivo a editar para cambiar textos.
  *
  * Reglas:
+ * - Este archivo es público y termina en el bundle: solo va lo que se publica.
+ *   Nada de notas internas ni proyectos ocultos.
  * - Solo datos confirmados en el README o en el código de cada repo. Nada inventado.
  * - Solo enlaces a repos públicos y revisados. Sin credenciales ni valores de .env.
- * - `publicar: false` oculta el proyecto hasta que Alejandro lo confirme.
+ * - `result` se deja sin definir hasta que Alejandro confirme un resultado real.
  * - El orden del arreglo es el orden en pantalla.
  */
 export const projects: Project[] = [
   {
     id: 'inteligent-inventory',
-    title: 'Smart Inventory (El Plonsazo)',
-    context: 'Academic project',
+    title: 'Inventario inteligente (El Plonsazo)',
+    context: 'Proyecto académico',
+    problem: 'Gestionar inventario, ventas y facturación en un solo sistema, y permitir que los clientes compren por chat.',
     summary:
-      'Inventory, sales and invoicing system: a hexagonal REST API in .NET 10, a React admin panel and a FastAPI + LangGraph chat microservice. The chat guides the customer through a purchase flow that records the sale and the invoice in the API.',
+      'Sistema de inventario, ventas y facturación: una API REST hexagonal en .NET 10, un panel de administración en React y un microservicio de chat en FastAPI + LangGraph. El chat guía al cliente por un flujo de compra que registra la venta y la factura en la API.',
     highlights: [
-      'Hexagonal architecture (Domain / Application / Infrastructure / Api) with EF Core migrations and automatic seeding.',
-      'Chatbot purchase in a single transaction: validates stock, creates the sale, updates inventory, logs the movement and issues the invoice.',
-      'Rule engine with a LangGraph state machine (OpenAI optional) and 21 pytest test files.',
+      'Arquitectura hexagonal (Domain / Application / Infrastructure / Api) con migraciones de EF Core y seed automático.',
+      'Compra desde el chatbot en una sola transacción: valida el stock, crea la venta, descuenta el inventario, registra el movimiento y genera la factura.',
+      'Motor de reglas con máquina de estados en LangGraph (OpenAI opcional) y 21 archivos de prueba en pytest.',
     ],
     tech: ['C#', '.NET 10', 'EF Core', 'PostgreSQL', 'JWT', 'Python', 'FastAPI', 'LangGraph', 'pytest', 'React 19', 'TypeScript', 'Tailwind CSS'],
-    // Sin enlaces: los tres repos (Backend, Frontend y LLMChatBot) tienen un .env versionado.
     links: [],
-    publicar: true,
-    notaInterna:
-      'PENDIENTE ALEJANDRO: InteligentInventoryBackend, InteligentInventoryFrontend e InteligentInventoryLLMChatBot tienen .env en el repo público. Enlazar solo tras limpiarlos. Revisar también cómo se presentan las categorías del catálogo ficticio.',
-  },
-  {
-    id: 'healtlab',
-    title: 'HealtLab',
-    context: 'Team project',
-    summary:
-      'Clinical management backend in C#/.NET: users, appointment scheduling, clinical records and role-based permissions (RBAC), plus a React SPA that consumes the API with JWT and real-time SignalR notifications.',
-    highlights: [
-      'Clean Architecture in four layers with explicit dependency rules.',
-      'RBAC with three roles (Administrator, Receptionist, Professional), token refresh and password recovery.',
-      'Appointment rules (30-minute limit, reschedule, cancel, no-show) and reports by status and by doctor.',
-    ],
-    tech: ['C#', '.NET 10', 'EF Core', 'PostgreSQL (Supabase)', 'JWT', 'SignalR', 'Swagger', 'React 19', 'TypeScript', 'Vite'],
-    links: [],
-    publicar: false,
-    notaInterna:
-      'OCULTO hasta que Alejandro confirme su rol: el README reparte capas entre otros integrantes y no dice qué hizo él. HEALTLAB_FRONTEND dice "uso privado" aunque es público: no enlazar. Los READMEs publican credenciales de prueba.',
   },
   {
     id: 'todo-hexagonal',
-    title: 'ToDo - Hexagonal Architecture',
+    title: 'ToDo - Arquitectura hexagonal',
+    problem: 'Mostrar la arquitectura hexagonal en la práctica con una API de tareas pequeña y completa.',
     summary:
-      'Task API in C# built as a hands-on guide to hexagonal architecture, with one use case per operation and a Vue 3 + TypeScript frontend.',
+      'API de tareas en C# hecha como guía práctica de arquitectura hexagonal, con un caso de uso por operación y un frontend en Vue 3 + TypeScript.',
     highlights: [
-      'Full CRUD with status filter and proper HTTP status codes.',
-      'One use case per operation: create, update, delete, list and get by id.',
+      'CRUD completo con filtro por estado y códigos HTTP correctos.',
+      'Un caso de uso por operación: crear, actualizar, eliminar, listar y obtener por id.',
     ],
     tech: ['C#', '.NET 10', 'Minimal APIs', 'EF Core', 'PostgreSQL', 'Vue 3', 'TypeScript', 'Vite'],
     links: [],
-    publicar: true,
-    notaInterna:
-      'PENDIENTE ALEJANDRO: Api/appsettings.json del repo ToDo contiene una contraseña en la cadena de conexión. Enlazar https://github.com/melokaso1/ToDo tras revisarla. El repo no tiene README.',
   },
   {
     id: 'agendabot',
     title: 'AgendaBot',
-    context: 'Pair project',
+    context: 'Proyecto en pareja',
+    problem: 'Agendar y gestionar citas desde un chat de Telegram, usando Google Sheets como base de datos.',
     summary:
-      'Telegram bot built with n8n to book, check, reschedule, cancel and complete appointments from a chat, using Google Sheets as its database.',
+      'Bot de Telegram hecho con n8n para agendar, consultar, reprogramar, cancelar y completar citas desde un chat, con Google Sheets como base de datos.',
     highlights: [
-      'Automatic user registration and per-Telegram-ID sessions to keep conversation context.',
-      'Full appointment lifecycle: book, check, reschedule, cancel and mark as completed.',
+      'Registro automático de usuarios y sesiones por ID de Telegram para mantener el contexto de la conversación.',
+      'Ciclo completo de citas: agendar, consultar, reprogramar, cancelar y marcar como completada.',
     ],
     tech: ['n8n', 'Telegram Bot API', 'Google Sheets API'],
-    links: [{ label: 'Repository', url: 'https://github.com/melokaso1/Proyecto_IA_Nivel1_EscobarAlejandro_Medina_Tomas' }],
-    publicar: true,
+    links: [{ label: 'Repositorio', url: 'https://github.com/melokaso1/Proyecto_IA_Nivel1_EscobarAlejandro_Medina_Tomas' }],
   },
   {
     id: 'liga-betplay',
     title: 'Liga BetPlay',
+    context: 'Versión C# en coautoría',
+    problem: 'Simular una temporada de la Liga BetPlay colombiana: calendario, jornadas y tabla de posiciones.',
     summary:
-      'Colombian Liga BetPlay simulator in a C# console app: registers teams, builds a round-robin schedule, simulates matchdays and computes the standings. A web version manages teams and their crests.',
+      'Simulador de la Liga BetPlay colombiana en una app de consola en C#: registra equipos, genera un calendario todos contra todos, simula jornadas y calcula la tabla de posiciones. Una versión web gestiona los equipos y sus escudos.',
     highlights: [
-      'Round-robin schedule and standings table (P, W, D, L, GF, GA, GD).',
-      'Layered architecture (Core / Modules) in the C# version.',
-      'Web version with local persistence in localStorage.',
+      'Calendario todos contra todos y tabla de posiciones (PJ, PG, PE, PP, GF, GC, DG).',
+      'Arquitectura en capas (Core / Modules) en la versión C#.',
+      'Versión web con persistencia local en localStorage.',
     ],
     tech: ['C#', '.NET', 'JavaScript', 'HTML', 'CSS', 'Tailwind CSS', 'Vite'],
     links: [
-      { label: 'C# repo', url: 'https://github.com/melokaso1/ligaBetplay_C-' },
-      { label: 'Web repo', url: 'https://github.com/melokaso1/ligaBetplay' },
-      { label: 'Live demo', url: 'https://ligabetplaydimayor.netlify.app/' },
+      { label: 'Repo C#', url: 'https://github.com/melokaso1/ligaBetplay_C-' },
+      { label: 'Repo web', url: 'https://github.com/melokaso1/ligaBetplay' },
+      { label: 'Demo en vivo', url: 'https://ligabetplaydimayor.netlify.app/' },
     ],
-    publicar: true,
-    notaInterna: 'La versión C# es en coautoría con Tomás Medina.',
   },
   {
     id: 'abc-lms',
     title: 'ABC-LMS (ABC Educate)',
+    problem: 'Gestionar docentes, administrativos, cursos, módulos y lecciones desde una sola app web.',
     summary:
-      'Web app to manage teachers, administrative staff, courses, modules and lessons, with login, protected routes and a statistics dashboard, styled like a terminal.',
+      'App web para gestionar docentes, administrativos, cursos, módulos y lecciones, con login, rutas protegidas y un dashboard de estadísticas, con estética de terminal.',
     highlights: [
-      'Hierarchical CRUD (course > module > lesson) with video, reading or quiz lessons.',
-      'Custom router with dynamic routes and token-based route protection.',
+      'CRUD jerárquico (curso > módulo > lección) con lecciones de video, lectura o quiz.',
+      'Enrutador propio con rutas dinámicas y protección de rutas por token.',
     ],
     tech: ['JavaScript', 'Web Components', 'HTML', 'CSS', 'localStorage'],
     links: [
-      { label: 'Repository', url: 'https://github.com/melokaso1/ABC-LMS' },
-      { label: 'Live demo', url: 'https://abc-curses.netlify.app/' },
+      { label: 'Repositorio', url: 'https://github.com/melokaso1/ABC-LMS' },
+      { label: 'Demo en vivo', url: 'https://abc-curses.netlify.app/' },
     ],
-    publicar: true,
-    notaInterna:
-      'Frontend sin backend real (datos en localStorage). El README publica credenciales de prueba de la demo: no copiarlas aquí; Alejandro decide si las quita del README.',
   },
   {
     id: 'dataset-editor',
     title: 'TrendGear Analytics (datasetEditorApp)',
+    problem: 'Explorar y editar datos de pedidos con KPIs y gráficos.',
     summary:
-      'Order analytics dashboard with CRUD against a REST API (MockAPI), KPIs, sales-by-category and payment-method charts, and record search.',
-    highlights: ['CRUD with fetch (GET / POST / PUT / DELETE) and hand-made charts, no frameworks.'],
+      'Dashboard de analítica de pedidos con CRUD contra una API REST (MockAPI), KPIs, gráficos de ventas por categoría y por método de pago, y búsqueda de registros.',
+    highlights: ['CRUD con fetch (GET / POST / PUT / DELETE) y gráficos hechos a mano, sin frameworks.'],
     tech: ['JavaScript', 'HTML', 'CSS', 'MockAPI'],
-    links: [{ label: 'Repository', url: 'https://github.com/melokaso1/datasetEditorApp' }],
-    publicar: true,
-    notaInterna: 'El repo no tiene README ni demo; la descripción sale del código.',
+    links: [{ label: 'Repositorio', url: 'https://github.com/melokaso1/datasetEditorApp' }],
   },
 ]
 
@@ -129,11 +106,9 @@ export const leadership: LeadershipItem[] = [
   {
     id: 'nodux',
     title: 'Nodux',
-    role: 'Team lead',
+    role: 'Líder de equipo',
     summary:
-      'Leading the development team of a private product: planning tasks, reviewing pull requests and coordinating frontend, backend, QA and DevOps work.',
-    publicar: true,
-    notaInterna: 'PENDIENTE ALEJANDRO: confirmar el texto. No enlazar repos ni dar datos internos.',
+      'Lidero el equipo de desarrollo de un producto privado: planifico tareas, reviso pull requests y coordino el trabajo de frontend, backend, QA y DevOps.',
   },
 ]
 
@@ -141,55 +116,46 @@ export const leadership: LeadershipItem[] = [
 export const otherWork: OtherWork[] = [
   {
     id: 'nexus-odonto',
-    title: 'Nexus Odonto (contributor)',
+    title: 'Nexus Odonto (colaborador)',
     summary:
-      'Dental clinic platform (team project): appointments, patients, RBAC roles, Oracle persistence, Docker deploy and an AI chatbot. Code is private; public docs and live demo.',
+      'Plataforma para clínicas odontológicas (proyecto de equipo): citas, pacientes, roles RBAC, persistencia en Oracle, despliegue con Docker y un chatbot con IA. El código es privado; la documentación es pública.',
     tech: ['C#', '.NET', 'Oracle', 'React', 'Docker'],
-    links: [
-      { label: 'Docs', url: 'https://github.com/NexusOdonto/NexusOdonto_documentation' },
-      { label: 'Live demo', url: 'https://nexusodonto.chatcampuslands.com/' },
-    ],
+    links: [{ label: 'Documentación', url: 'https://github.com/NexusOdonto/NexusOdonto_documentation' }],
   },
   {
     id: 'gestion-mecanica',
-    title: 'Automotive Workshop Management',
+    title: 'Gestión de taller mecánico',
     summary:
-      'Workshop management platform: clients, vehicles, service orders and billing. ASP.NET API + Blazor WASM + WPF desktop host with JWT roles.',
+      'Plataforma de gestión de taller: clientes, vehículos, órdenes de servicio y facturación. API en ASP.NET + Blazor WASM + host de escritorio WPF con roles JWT.',
     tech: ['C#', '.NET', 'EF Core', 'PostgreSQL', 'Blazor', 'WPF'],
     links: [],
-    notaInterna: 'PENDIENTE: Api/appsettings.json del repo tiene contraseña/clave. Enlazar tras revisarlo.',
   },
   {
     id: 'transporte-migrations',
-    title: 'Transport - DB Migrations',
-    summary: 'Transport domain modeled with EF Core migrations and structured persistence in C#.',
+    title: 'Transporte - Migraciones de BD',
+    summary: 'Dominio de transporte modelado con migraciones de EF Core y persistencia estructurada en C#.',
     tech: ['C#', 'EF Core'],
     links: [],
-    notaInterna: 'PENDIENTE: appsettings.json del repo tiene contraseña. Enlazar tras revisarlo.',
   },
   {
     id: 'luxtime',
-    title: 'LuxTime - Luxury Watches',
-    summary: 'Luxury watch e-commerce landing with polished UI and responsive layout.',
+    title: 'LuxTime - Relojes de lujo',
+    summary: 'Landing de e-commerce de relojes de lujo con interfaz cuidada y diseño responsive.',
     tech: ['HTML', 'CSS', 'JavaScript', 'Tailwind'],
-    links: [{ label: 'Live demo', url: 'https://luxtime-luxury.netlify.app/' }],
-    notaInterna: 'El repo proyecto_luxTime ahora es privado: solo se enlaza la demo.',
+    links: [],
   },
   {
     id: 'coworking',
-    title: 'Coworking Room Manager',
-    summary: 'Coworking room reservation and scheduling system built in Python.',
+    title: 'Gestor de salas de coworking',
+    summary: 'Sistema de reservas y agenda de salas de coworking hecho en Python.',
     tech: ['Python'],
-    links: [{ label: 'Repository', url: 'https://github.com/melokaso1/Gestor-de-Reservas-de-Salas-de-Coworking-Python-Edition-' }],
+    links: [{ label: 'Repositorio', url: 'https://github.com/melokaso1/Gestor-de-Reservas-de-Salas-de-Coworking-Python-Edition-' }],
   },
   {
     id: 'cuentas-bancarias',
-    title: 'Bank Account Manager',
-    summary: 'Bank account management system with JSON as persistence layer.',
+    title: 'Gestor de cuentas bancarias',
+    summary: 'Sistema de gestión de cuentas bancarias con JSON como capa de persistencia.',
     tech: ['Python', 'JSON'],
-    links: [{ label: 'Repository', url: 'https://github.com/melokaso1/gestion_cuentas_bancarias_json' }],
+    links: [{ label: 'Repositorio', url: 'https://github.com/melokaso1/gestion_cuentas_bancarias_json' }],
   },
 ]
-
-export const publishedProjects = (): Project[] => projects.filter((p) => p.publicar)
-export const publishedLeadership = (): LeadershipItem[] => leadership.filter((l) => l.publicar)

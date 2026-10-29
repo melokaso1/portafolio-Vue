@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import SectionHeading from './SectionHeading.vue'
 import ProjectCard from './ProjectCard.vue'
-import { otherWork, publishedLeadership, publishedProjects } from '@/data/projects'
-
-const projects = publishedProjects()
-const leadership = publishedLeadership()
+import { leadership, otherWork, projects } from '@/data/projects'
 </script>
 
 <template>
@@ -12,8 +9,8 @@ const leadership = publishedLeadership()
     <SectionHeading
       id="projects"
       command="ls ./projects --featured"
-      title="Projects"
-      description="Selected systems I built or contributed to."
+      title="Proyectos"
+      description="Sistemas que construí o en los que participé, presentados como casos de estudio."
     />
 
     <ul class="grid gap-5 md:grid-cols-2">
@@ -23,7 +20,7 @@ const leadership = publishedLeadership()
     </ul>
 
     <div v-if="leadership.length" class="mt-14">
-      <h3 v-reveal class="font-mono text-sm text-green">// leadership</h3>
+      <h3 v-reveal class="font-mono text-sm text-green">// liderazgo</h3>
       <ul class="mt-4 grid gap-5 md:grid-cols-2">
         <li v-for="item in leadership" :key="item.id" v-reveal class="card p-6">
           <p class="text-lg font-semibold text-text">
@@ -38,7 +35,7 @@ const leadership = publishedLeadership()
     </div>
 
     <div class="mt-14">
-      <h3 v-reveal class="font-mono text-sm text-green">// more work</h3>
+      <h3 v-reveal class="font-mono text-sm text-green">// otros trabajos</h3>
       <ul class="mt-4 divide-y divide-border rounded-xl border border-border">
         <li
           v-for="item in otherWork"
@@ -60,7 +57,7 @@ const leadership = publishedLeadership()
               rel="noopener noreferrer"
               class="link-inline whitespace-nowrap"
             >
-              {{ link.label }} <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span>
+              {{ link.label }} <span aria-hidden="true">↗</span><span class="sr-only"> (se abre en una pestaña nueva)</span>
             </a>
           </div>
         </li>
