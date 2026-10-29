@@ -1,41 +1,20 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    './index.html',
-    './src/**/*.{js,ts,jsx,tsx}',
-  ],
+  content: ['./index.html', './src/**/*.{vue,ts}'],
   theme: {
     extend: {
       colors: {
-        bg: 'var(--bg)',
-        surface: 'var(--surface)',
-        border: 'var(--border)',
-        text: 'var(--text)',
-        muted: 'var(--muted)',
-        green: 'var(--green)',
-        cyan: 'var(--cyan)',
+        bg: 'rgb(var(--bg) / <alpha-value>)',
+        surface: 'rgb(var(--surface) / <alpha-value>)',
+        border: 'rgb(var(--border) / <alpha-value>)',
+        text: 'rgb(var(--text) / <alpha-value>)',
+        muted: 'rgb(var(--muted) / <alpha-value>)',
+        green: 'rgb(var(--green) / <alpha-value>)',
+        cyan: 'rgb(var(--cyan) / <alpha-value>)',
       },
       fontFamily: {
-        mono: ['JetBrains Mono', 'Courier New', 'monospace'],
-      },
-      keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0', transform: 'translateY(12px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
-        blink: {
-          '0%, 49%': { opacity: '1' },
-          '50%, 100%': { opacity: '0' },
-        },
-        'pulse-glow': {
-          '0%, 100%': { boxShadow: '0 0 6px rgba(34, 197, 94, 0.35)' },
-          '50%': { boxShadow: '0 0 14px rgba(34, 197, 94, 0.7)' },
-        },
-      },
-      animation: {
-        fadeIn: 'fadeIn 0.55s ease-out forwards',
-        blink: 'blink 0.7s infinite',
-        'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
     },
   },

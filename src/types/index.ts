@@ -6,21 +6,40 @@ export interface ProjectLink {
 export interface Project {
   id: string
   title: string
-  description: string
+  /** Etiqueta corta de contexto (p. ej. proyecto académico o en pareja). Solo datos confirmados. */
+  context?: string
+  summary: string
+  highlights: string[]
   tech: string[]
-  githubUrl: string
-  liveUrl?: string
-  extraLinks?: ProjectLink[]
-  featured?: boolean
-  /** True when you contributed but do not own the repo */
-  contributor?: boolean
-  category: 'backend' | 'frontend'
+  /** Solo enlaces públicos y revisados. Vacío = no se enlaza todavía. */
+  links: ProjectLink[]
+  /** false = no se muestra en el sitio hasta que Alejandro lo confirme. */
+  publicar: boolean
+  /** Nota interna para el equipo. No se renderiza. */
+  notaInterna?: string
+}
+
+export interface LeadershipItem {
+  id: string
+  title: string
+  role: string
+  summary: string
+  publicar: boolean
+  notaInterna?: string
+}
+
+export interface OtherWork {
+  id: string
+  title: string
+  summary: string
+  tech: string[]
+  links: ProjectLink[]
+  notaInterna?: string
 }
 
 export interface SkillGroup {
   category: string
   skills: string[]
-  color: 'green' | 'cyan'
 }
 
 export interface LearningItem {
@@ -30,41 +49,17 @@ export interface LearningItem {
   status: 'in-progress' | 'completed'
 }
 
-export interface NavLink {
-  label: string
-  href: string
-}
-
-export interface ContactForm {
-  name: string
-  email: string
-  message: string
-}
-
-export interface ContactErrors {
-  name?: string
-  email?: string
-  message?: string
-}
-
-export interface TerminalWindowProps {
-  title: string
-  children: React.ReactNode
-  accentColor?: 'green' | 'cyan'
-}
-
-export interface TypewriterResult {
-  text: string
-  isTyping: boolean
-}
-
 export interface PersonalInfo {
   name: string
   handle: string
   roles: string[]
   bio: string
-  email: string
   github: string
   linkedin: string
   location: string
+}
+
+export interface NavLink {
+  label: string
+  id: string
 }
