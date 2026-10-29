@@ -8,8 +8,8 @@ import { learningItems } from '@/data/profile'
     <SectionHeading
       id="learning"
       command="ps aux | grep learning"
-      title="Learning"
-      description="Completed and still in progress."
+      title="Aprendizaje"
+      description="Completado y en curso."
     />
 
     <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -23,7 +23,7 @@ import { learningItems } from '@/data/profile'
             class="shrink-0 rounded-full border px-2 py-0.5 font-mono text-[11px]"
             :class="item.status === 'completed' ? 'border-green/40 text-green' : 'border-cyan/40 text-cyan'"
           >
-            {{ item.status === 'completed' ? 'Completed' : 'In progress' }}
+            {{ item.status === 'completed' ? 'Completado' : 'En curso' }}
           </span>
         </div>
         <div class="mt-4 h-1 overflow-hidden rounded-full bg-border" aria-hidden="true">

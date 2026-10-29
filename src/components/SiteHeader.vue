@@ -44,7 +44,7 @@ onBeforeUnmount(() => {
     class="fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300"
     :class="scrolled ? 'border-border bg-bg/85 backdrop-blur-md' : 'border-transparent bg-transparent'"
   >
-    <nav class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-5 py-3" aria-label="Main">
+    <nav class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-5 py-3" aria-label="Principal">
       <a href="#hero" class="font-mono text-sm text-green">
         &gt; {{ personalInfo.handle }}<span class="caret text-green" aria-hidden="true">_</span>
       </a>
@@ -70,7 +70,7 @@ onBeforeUnmount(() => {
         aria-controls="mobile-menu"
         @click="toggleMenu"
       >
-        <span class="sr-only">{{ isOpen ? 'Close menu' : 'Open menu' }}</span>
+        <span class="sr-only">{{ isOpen ? 'Cerrar menú' : 'Abrir menú' }}</span>
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path v-if="!isOpen" stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16" />
           <path v-else stroke-linecap="round" d="M6 6l12 12M18 6L6 18" />

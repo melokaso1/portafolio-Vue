@@ -5,7 +5,7 @@ import { aboutParagraphs, profileFacts } from '@/data/profile'
 
 <template>
   <section id="about" class="section" aria-labelledby="about-title">
-    <SectionHeading id="about" command="cat ./about/profile.md" title="About" />
+    <SectionHeading id="about" command="cat ./about/profile.md" title="Sobre mí" />
 
     <div class="grid gap-8 md:grid-cols-[1.4fr_1fr]">
       <div v-reveal class="space-y-4 leading-relaxed text-text/90">

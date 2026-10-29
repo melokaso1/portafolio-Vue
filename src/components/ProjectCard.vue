@@ -15,12 +15,12 @@ defineProps<{ project: Project }>()
 
     <dl class="mt-4 space-y-4">
       <div>
-        <dt class="font-mono text-xs uppercase tracking-wide text-green">Problem</dt>
+        <dt class="font-mono text-xs uppercase tracking-wide text-green">Problema</dt>
         <dd class="mt-1 leading-relaxed text-text/85">{{ project.problem }}</dd>
       </div>
 
       <div>
-        <dt class="font-mono text-xs uppercase tracking-wide text-green">What I did</dt>
+        <dt class="font-mono text-xs uppercase tracking-wide text-green">Qué hice</dt>
         <dd class="mt-1">
           <p class="leading-relaxed text-text/85">{{ project.summary }}</p>
           <ul v-if="project.highlights.length" class="mt-3 space-y-1.5 text-sm text-muted">
@@ -35,14 +35,14 @@ defineProps<{ project: Project }>()
       <div>
         <dt class="font-mono text-xs uppercase tracking-wide text-green">Stack</dt>
         <dd class="mt-2">
-          <ul class="flex flex-wrap gap-1.5" aria-label="Technologies">
+          <ul class="flex flex-wrap gap-1.5" aria-label="Tecnologías">
             <li v-for="t in project.tech" :key="t" class="chip">{{ t }}</li>
           </ul>
         </dd>
       </div>
 
       <div v-if="project.result">
-        <dt class="font-mono text-xs uppercase tracking-wide text-green">Result</dt>
+        <dt class="font-mono text-xs uppercase tracking-wide text-green">Resultado</dt>
         <dd class="mt-1 leading-relaxed text-text/85">{{ project.result }}</dd>
       </div>
     </dl>
@@ -56,7 +56,7 @@ defineProps<{ project: Project }>()
         rel="noopener noreferrer"
         class="link-inline"
       >
-        {{ link.label }} <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span>
+        {{ link.label }} <span aria-hidden="true">↗</span><span class="sr-only"> (se abre en una pestaña nueva)</span>
       </a>
     </div>
   </article>

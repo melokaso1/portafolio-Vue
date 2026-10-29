@@ -99,6 +99,16 @@ describe('App', () => {
     for (const a of anchors) expect(a.attributes('rel')).toBe('noopener noreferrer')
   })
 
+  it('el sitio está en español y sin rastros de HealtLab', () => {
+    const html = mountApp().html()
+    for (const en of ['Skip to content', 'Open menu', 'What I did', 'opens in a new tab', 'Learning', 'Skills']) {
+      expect(html).not.toContain(en)
+    }
+    expect(html).toContain('Saltar al contenido')
+    expect(html).toContain('Qué hice')
+    expect(html).not.toMatch(/SignalR|clinical/i)
+  })
+
   it('menú móvil: aria-controls apunta a un elemento existente y el foco vuelve al botón', async () => {
     const host = document.createElement('div')
     document.body.appendChild(host)

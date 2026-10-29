@@ -72,7 +72,7 @@ onBeforeUnmount(() => window.clearTimeout(timer))
       <div class="mt-9 flex flex-col gap-3 sm:flex-row">
         <a href="#services" class="btn btn-primary justify-center">Trabaja conmigo</a>
         <a :href="personalInfo.linkedin" target="_blank" rel="noopener noreferrer" class="btn btn-ghost justify-center">
-          CV / LinkedIn <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span>
+          CV / LinkedIn <span aria-hidden="true">↗</span><span class="sr-only"> (se abre en una pestaña nueva)</span>
         </a>
       </div>
 
