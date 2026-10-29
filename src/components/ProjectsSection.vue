@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import SectionHeading from './SectionHeading.vue'
 import ProjectCard from './ProjectCard.vue'
-import { otherWork, publishedLeadership, publishedProjects } from '@/data/projects'
-
-const projects = publishedProjects()
-const leadership = publishedLeadership()
+import { leadership, otherWork, projects } from '@/data/projects'
 </script>
 
 <template>
@@ -13,7 +10,7 @@ const leadership = publishedLeadership()
       id="projects"
       command="ls ./projects --featured"
       title="Projects"
-      description="Selected systems I built or contributed to."
+      description="Selected systems I built or contributed to, as case studies."
     />
 
     <ul class="grid gap-5 md:grid-cols-2">

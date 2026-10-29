@@ -13,18 +13,39 @@ defineProps<{ project: Project }>()
       </span>
     </div>
 
-    <p class="mt-3 leading-relaxed text-text/85">{{ project.summary }}</p>
+    <dl class="mt-4 space-y-4">
+      <div>
+        <dt class="font-mono text-xs uppercase tracking-wide text-green">Problem</dt>
+        <dd class="mt-1 leading-relaxed text-text/85">{{ project.problem }}</dd>
+      </div>
 
-    <ul v-if="project.highlights.length" class="mt-4 space-y-1.5 text-sm text-muted">
-      <li v-for="h in project.highlights" :key="h" class="flex gap-2">
-        <span class="mt-[0.55rem] h-1 w-1 shrink-0 rounded-full bg-green" aria-hidden="true" />
-        <span>{{ h }}</span>
-      </li>
-    </ul>
+      <div>
+        <dt class="font-mono text-xs uppercase tracking-wide text-green">What I did</dt>
+        <dd class="mt-1">
+          <p class="leading-relaxed text-text/85">{{ project.summary }}</p>
+          <ul v-if="project.highlights.length" class="mt-3 space-y-1.5 text-sm text-muted">
+            <li v-for="h in project.highlights" :key="h" class="flex gap-2">
+              <span class="mt-[0.55rem] h-1 w-1 shrink-0 rounded-full bg-green" aria-hidden="true" />
+              <span>{{ h }}</span>
+            </li>
+          </ul>
+        </dd>
+      </div>
 
-    <ul class="mt-5 flex flex-wrap gap-1.5" aria-label="Technologies">
-      <li v-for="t in project.tech" :key="t" class="chip">{{ t }}</li>
-    </ul>
+      <div>
+        <dt class="font-mono text-xs uppercase tracking-wide text-green">Stack</dt>
+        <dd class="mt-2">
+          <ul class="flex flex-wrap gap-1.5" aria-label="Technologies">
+            <li v-for="t in project.tech" :key="t" class="chip">{{ t }}</li>
+          </ul>
+        </dd>
+      </div>
+
+      <div v-if="project.result">
+        <dt class="font-mono text-xs uppercase tracking-wide text-green">Result</dt>
+        <dd class="mt-1 leading-relaxed text-text/85">{{ project.result }}</dd>
+      </div>
+    </dl>
 
     <div v-if="project.links.length" class="mt-auto flex flex-wrap gap-x-5 gap-y-2 pt-5">
       <a

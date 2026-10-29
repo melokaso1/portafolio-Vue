@@ -2,6 +2,7 @@
 import SiteHeader from './components/SiteHeader.vue'
 import HeroSection from './components/HeroSection.vue'
 import AboutSection from './components/AboutSection.vue'
+import ServicesSection from './components/ServicesSection.vue'
 import SkillsSection from './components/SkillsSection.vue'
 import ProjectsSection from './components/ProjectsSection.vue'
 import LearningSection from './components/LearningSection.vue'
@@ -20,6 +21,7 @@ import SiteFooter from './components/SiteFooter.vue'
   <main id="main" tabindex="-1">
     <HeroSection />
     <AboutSection />
+    <ServicesSection />
     <SkillsSection />
     <ProjectsSection />
     <LearningSection />
