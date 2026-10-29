@@ -1,3 +1,22 @@
+# Dependencias y build
+node_modules
+dist
+dist-ssr
+coverage
+*.tsbuildinfo
+
+# Variables de entorno
+.env
+.env.*
+!.env.example
+
+# Editor / SO
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.log
+
 # v0 sandbox internal files
 __v0_runtime_loader.js
 __v0_devtools.tsx
@@ -6,11 +25,3 @@ __v0_jsx-dev-runtime.ts
 .v0-trash/
 .vercel/
 next.user-config.*
-
-# Environment variables
-.env*.local
-
-# Common ignores
-node_modules
-.next/
-.DS_Store
