@@ -4,7 +4,7 @@ Portafolio personal de **Jhon Alejandro Escobar Lozada**, hecho con **Vue 3 + Vi
 
 ## Requisitos
 
-- Node.js 20 o superior
+- Node.js 22 o superior (ver `.nvmrc` y `engines` en `package.json`)
 - npm
 
 ## Uso
@@ -21,8 +21,8 @@ npm run preview     # sirve el build
 
 ## Editar contenido
 
-- Proyectos: `src/data/projects.ts` (orden, textos, enlaces y `publicar` para ocultar).
-- Perfil, skills y aprendizaje: `src/data/profile.ts`.
+- Proyectos: `src/data/projects.ts` (casos de estudio: problema, qué hizo, stack y resultado opcional). Es público y va en el bundle: no poner notas internas ni proyectos ocultos.
+- Perfil, mensaje principal, servicios, skills y aprendizaje: `src/data/profile.ts`.
 
 Reglas del contenido:
 
