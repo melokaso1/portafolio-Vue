@@ -9,8 +9,8 @@ export interface Project {
   title: string
   /** Etiqueta corta de contexto (p. ej. proyecto académico o en pareja). Solo datos confirmados. */
   context?: string
-  /** Problema que resuelve el proyecto. */
-  problem: string
+  /** Problema que resuelve el proyecto. Se omite (y no se muestra) mientras no esté confirmado. */
+  problem?: string
   /** Solución: qué se construyó. */
   summary: string
   /** Caso destacado (se muestra grande, con Problema / Solución / Resultado). */

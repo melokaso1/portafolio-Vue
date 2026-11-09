@@ -13,11 +13,11 @@ describe('Stack', () => {
 })
 
 describe('Sobre mí', () => {
-  it('tiene 3 líneas con experiencia, origen y ubicación', () => {
+  it('muestra la experiencia y omite la ubicación (profile.ts y about.ts se contradicen)', () => {
     expect(aboutParagraphs).toHaveLength(3)
     const text = mountApp().find('#about').text()
     expect(text).toContain('1.5 años')
-    expect(text).toContain('Bogotá')
-    expect(text).toContain('Bucaramanga')
+    expect(text).toContain('Nodux')
+    expect(text).not.toMatch(/Bogotá|Bucaramanga|Floridablanca/)
   })
 })

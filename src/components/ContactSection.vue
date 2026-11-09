@@ -1,71 +1,61 @@
 <script setup lang="ts">
-import Button from 'primevue/button'
-import SectionHeading from './SectionHeading.vue'
-import Magnet from '@/components/vue-bits/Magnet.vue'
-import SpotlightCard from '@/components/vue-bits/SpotlightCard.vue'
-import MotionReveal from '@/components/motion/MotionReveal.vue'
+import { defineAsyncComponent } from 'vue'
+import Magnet from './vue-bits/Magnet.vue'
+import PcIllustration from './pc/PcIllustration.vue'
 import { contact } from '@/data/contact'
-import { useReducedMotion } from '@/composables/useReducedMotion'
+import { personalInfo } from '@/data/profile'
+import { useFinePointer } from '@/composables/useFinePointer'
 
-const reduced = useReducedMotion()
-const display = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '')
+/** Cierre: Cubes de fondo (ripple ámbar al hacer clic) y Magnet en el CTA. Solo LinkedIn y GitHub. */
+const Cubes = defineAsyncComponent(() => import('./vue-bits/Cubes.vue'))
+const fine = useFinePointer()
+const [before, after] = contact.closing.split('Hablemos')
 </script>
 
 <template>
   <section id="contact" class="section" aria-labelledby="contact-title">
-    <SectionHeading id="contact" command="./connect.sh" title="Contacto" />
-
-    <MotionReveal>
-      <SpotlightCard class-name="card !rounded-2xl !p-8 md:!p-12" spotlight-color="rgba(74, 222, 128, 0.15)">
-        <div class="relative">
-          <p class="max-w-3xl text-2xl font-bold leading-tight tracking-tight text-text sm:text-3xl md:text-4xl">
-            {{ contact.closing }}
-          </p>
-          <p class="mt-4 max-w-2xl text-muted">{{ contact.intro }}</p>
-
-          <div class="mt-8">
-            <Magnet :disabled="reduced" :padding="60" :magnet-strength="6" wrapper-class-name="w-full sm:w-auto" inner-class-name="w-full">
-              <Button
-                as="a"
-                :href="contact.primary.url"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="btn btn-primary w-full justify-center sm:w-auto"
-              >
-                {{ contact.primary.label }} <span aria-hidden="true">↗</span><span class="sr-only"> (se abre en una pestaña nueva)</span>
-              </Button>
-            </Magnet>
+    <div class="shell">
+      <div class="relative overflow-hidden rounded-2xl border border-line bg-bg lg:min-h-[400px] lg:rounded-[20px]">
+        <div v-if="fine" class="absolute inset-0" aria-hidden="true">
+          <div class="absolute -top-[30%] left-0 w-full opacity-90">
+            <Cubes
+              :grid-size="16"
+              :max-angle="35"
+              :radius="3"
+              :cell-gap="12"
+              border-style="1px dashed #2A2D32"
+              face-color="#0E0F11"
+              :auto-animate="false"
+              :ripple-on-click="true"
+              ripple-color="#E8A33D"
+            />
           </div>
         </div>
-      </SpotlightCard>
-    </MotionReveal>
 
-    <ul class="mt-6 grid gap-4 sm:grid-cols-3">
-      <li v-for="(c, i) in contact.channels" :key="c.label" v-reveal="i * 80">
-        <a
-          :href="c.url"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="card card-hover group flex h-full items-center justify-between gap-4 p-5"
-        >
-          <span>
-            <span class="block font-medium text-text group-hover:text-green">{{ c.label }}</span>
-            <span class="mt-1 block break-all font-mono text-xs text-muted">{{ display(c.url) }}</span>
-            <span class="mt-1 block text-xs text-muted">{{ c.hint }}</span>
-          </span>
-          <span class="text-muted transition-transform duration-200 group-hover:translate-x-1 group-hover:text-green" aria-hidden="true">↗</span>
-          <span class="sr-only"> (se abre en una pestaña nueva)</span>
-        </a>
-      </li>
-      <li v-if="contact.directChannelUrl" v-reveal="160">
-        <a :href="contact.directChannelUrl" target="_blank" rel="noopener noreferrer" class="card card-hover flex h-full items-center p-5">
-          Agenda una llamada <span class="sr-only"> (se abre en una pestaña nueva)</span>
-        </a>
-      </li>
-      <!-- TODO: canal directo (formulario o agenda) pendiente de Alejandro. Ver src/data/contact.ts. -->
-      <li v-else v-reveal="160" class="flex h-full items-center rounded-xl border border-dashed border-border p-5 text-sm text-muted">
-        TODO: canal directo (formulario o agenda) pendiente.
-      </li>
-    </ul>
+        <div class="pointer-events-none relative grid items-center gap-6 px-[22px] py-7 lg:grid-cols-[minmax(0,620px)_1fr] lg:px-14 lg:py-16 [&_a]:pointer-events-auto">
+          <div>
+            <p class="idx" aria-hidden="true">05</p>
+            <h2 id="contact-title" class="mt-2.5 font-display text-[30px] font-semibold leading-[1.05] tracking-[-0.025em] text-ink lg:text-[52px]">
+              {{ before }}<span class="text-accent">Hablemos</span>{{ after }}
+            </h2>
+            <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center lg:mt-8">
+              <Magnet :padding="60" :magnet-strength="4" :disabled="!fine" wrapper-class-name="pointer-events-auto">
+                <a :href="contact.primary.url" target="_blank" rel="noopener noreferrer" class="btn btn-primary w-full justify-center sm:w-auto">
+                  {{ contact.primary.label }} <span aria-hidden="true">↗</span>
+                </a>
+              </Magnet>
+              <a :href="personalInfo.github" target="_blank" rel="noopener noreferrer" class="link self-center sm:ml-3">
+                GitHub <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </div>
+          <div class="hidden lg:block">
+            <div class="ml-auto w-full max-w-[380px] lg:-my-10">
+              <PcIllustration :stage="5" trigger="#contact" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 </template>

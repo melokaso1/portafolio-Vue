@@ -1,13 +1,23 @@
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
-import { navLinks } from '@/data/nav'
-import { personalInfo } from '@/data/profile'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import BranchedMenu, { type BranchedMenuItem } from './vue-bits/BranchedMenu.vue'
+import { navGroups, navLinks } from '@/data/nav'
+import { hero } from '@/data/hero'
 import { useActiveSection } from '@/composables/useActiveSection'
+import { prefersReducedMotion } from '@/composables/useReducedMotion'
 
 const isOpen = ref(false)
-const scrolled = ref(false)
 const menuButton = ref<HTMLButtonElement | null>(null)
-const active = useActiveSection(navLinks.map((l) => l.id))
+const sheet = ref<HTMLElement | null>(null)
+const active = useActiveSection(['hero', ...navLinks.map((l) => l.id)])
+
+const items = computed<BranchedMenuItem[]>(() =>
+  navGroups.map((group) => ({
+    label: group.label,
+    children: group.ids.map((id) => ({ value: id, label: navLinks.find((l) => l.id === id)?.label ?? id })),
+  })),
+)
+const current = computed(() => (active.value === 'hero' ? '' : active.value))
 
 const closeMenu = async (returnFocus = true) => {
   if (!isOpen.value) return
@@ -22,84 +32,96 @@ const toggleMenu = () => {
   else isOpen.value = true
 }
 
-const onScroll = () => {
-  scrolled.value = window.scrollY > 8
+const go = (id: string) => {
+  const el = document.getElementById(id)
+  if (!el) return
+  void closeMenu(false)
+  el.scrollIntoView?.({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' })
+  history.replaceState?.(null, '', `#${id}`)
 }
+
 const onKey = (e: KeyboardEvent) => {
   if (e.key === 'Escape') void closeMenu()
 }
 
-onMounted(() => {
-  onScroll()
-  window.addEventListener('scroll', onScroll, { passive: true })
-  window.addEventListener('keydown', onKey)
+watch(isOpen, async (open) => {
+  document.documentElement.classList.toggle('overflow-hidden', open)
+  if (open) {
+    await nextTick()
+    sheet.value?.querySelector<HTMLElement>('button')?.focus()
+  }
 })
+
+onMounted(() => window.addEventListener('keydown', onKey))
 onBeforeUnmount(() => {
-  window.removeEventListener('scroll', onScroll)
   window.removeEventListener('keydown', onKey)
+  document.documentElement.classList.remove('overflow-hidden')
 })
 </script>
 
 <template>
-  <header
-    class="fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300"
-    :class="scrolled ? 'border-border bg-bg/85 backdrop-blur-md' : 'border-transparent bg-transparent'"
-  >
-    <nav class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-5 py-3" aria-label="Principal">
-      <a href="#hero" class="font-mono text-sm text-green">
-        &gt; {{ personalInfo.handle }}<span class="caret text-green" aria-hidden="true">_</span>
+  <header>
+    <!-- Desktop (≥1280): rail fijo con Branched Menu, línea troncal y CTA arriba a la derecha. -->
+    <div class="pointer-events-none fixed inset-y-0 left-16 z-0 hidden w-px bg-line xl:block" aria-hidden="true" />
+    <div class="fixed left-10 top-7 z-40 hidden w-[200px] xl:block">
+      <a href="#hero" class="flex items-center gap-2.5 rounded-lg font-display text-base font-semibold text-ink">
+        <span class="flex h-8 w-8 items-center justify-center rounded-lg border border-ink bg-bg text-[13px]" aria-hidden="true">AE</span>
+        Alejandro Escobar
       </a>
+      <BranchedMenu
+        class="mt-10 bg-bg/80"
+        aria-label="Secciones"
+        :items="items"
+        :default-open="[0, 1]"
+        :default-active="current"
+        color="#ECEAE6"
+        accent-color="#E8A33D"
+        line-color="#2A2D32"
+        :width="200"
+        :font-size="14"
+        @select="go"
+      />
+    </div>
+    <a href="#contact" class="btn btn-primary fixed right-20 top-7 z-40 hidden !px-[18px] !py-2.5 !text-sm xl:inline-flex">
+      {{ hero.primaryCta.label }}
+    </a>
 
-      <ul class="hidden gap-1 md:flex">
-        <li v-for="link in navLinks" :key="link.id">
-          <a
-            :href="`#${link.id}`"
-            class="rounded-md px-3 py-1.5 text-sm transition-colors duration-200"
-            :class="active === link.id ? 'bg-green/10 text-green' : 'text-muted hover:text-text'"
-            :aria-current="active === link.id ? 'location' : undefined"
-          >
-            {{ link.label }}
-          </a>
-        </li>
-      </ul>
-
+    <!-- Móvil y tablet: barra superior y hoja con el mismo Branched Menu. -->
+    <div class="fixed inset-x-0 top-0 z-50 flex h-[60px] items-center justify-between border-b border-line/60 bg-bg/90 px-5 backdrop-blur-md xl:hidden">
+      <a href="#hero" class="flex items-center gap-2.5 rounded-lg font-display font-semibold text-ink" aria-label="Alejandro Escobar, ir al inicio">
+        <span class="flex h-8 w-8 items-center justify-center rounded-lg border border-ink text-[13px]" aria-hidden="true">AE</span>
+      </a>
       <button
         ref="menuButton"
         type="button"
-        class="rounded-md p-2 text-text md:hidden"
+        class="rounded-full border border-line px-3.5 py-2 font-mono text-[13px] text-ink"
         :aria-expanded="isOpen"
         aria-controls="mobile-menu"
         @click="toggleMenu"
       >
-        <span class="sr-only">{{ isOpen ? 'Cerrar menú' : 'Abrir menú' }}</span>
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path v-if="!isOpen" stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16" />
-          <path v-else stroke-linecap="round" d="M6 6l12 12M18 6L6 18" />
-        </svg>
+        {{ isOpen ? 'Cerrar' : 'Menú' }}
       </button>
-    </nav>
-
-    <Transition
-      enter-active-class="transition duration-200 ease-out"
-      enter-from-class="opacity-0 -translate-y-2"
-      leave-active-class="transition duration-150 ease-in"
-      leave-to-class="opacity-0 -translate-y-2"
+    </div>
+    <div
+      v-show="isOpen"
+      id="mobile-menu"
+      ref="sheet"
+      class="fixed inset-x-0 bottom-0 top-[60px] z-50 flex flex-col justify-between bg-bg px-4 pb-6 pt-6 xl:hidden"
     >
-      <div v-show="isOpen" id="mobile-menu" class="border-t border-border bg-bg/95 backdrop-blur-md md:hidden">
-        <ul class="mx-auto flex max-w-5xl flex-col px-5 py-3">
-          <li v-for="link in navLinks" :key="link.id">
-            <a
-              :href="`#${link.id}`"
-              class="block rounded-md px-3 py-2.5"
-              :class="active === link.id ? 'text-green' : 'text-muted hover:text-text'"
-              :aria-current="active === link.id ? 'location' : undefined"
-              @click="closeMenu(false)"
-            >
-              {{ link.label }}
-            </a>
-          </li>
-        </ul>
-      </div>
-    </Transition>
+      <BranchedMenu
+        aria-label="Secciones"
+        :items="items"
+        :default-open="[0, 1]"
+        :default-active="current"
+        color="#ECEAE6"
+        accent-color="#E8A33D"
+        line-color="#2A2D32"
+        :width="320"
+        :font-size="17"
+        :row-height="44"
+        @select="go"
+      />
+      <a href="#contact" class="btn btn-primary w-full justify-center" @click="closeMenu(false)">{{ hero.primaryCta.label }}</a>
+    </div>
   </header>
 </template>

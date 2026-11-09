@@ -5,8 +5,29 @@ describe('App', () => {
   it('renderiza las secciones en el orden de venta', () => {
     const wrapper = mountApp()
     const ids = wrapper.findAll('main > section').map((s) => s.attributes('id'))
-    const expected = ['hero', 'resuelvo', 'projects', 'services', 'skills', 'about', 'contact']
+    const expected = ['hero', 'resuelvo', 'projects', 'services', 'skills', 'contact']
     expect(ids.filter((id) => expected.includes(id ?? ''))).toEqual(expected)
+  })
+
+  it('"Sobre mí" vive dentro de la sección de stack (rediseño v2)', () => {
+    expect(mountApp().find('#skills #about').exists()).toBe(true)
+  })
+
+  it('no muestra TODO ni marcadores pendientes en pantalla', () => {
+    const text = mountApp().text()
+    expect(text).not.toMatch(/\bTODO\b|PENDIENTE|Pendiente|[Pp]laceholder/)
+  })
+
+  it('no muestra ubicación mientras las fuentes se contradigan', () => {
+    const text = mountApp().text()
+    expect(text).not.toMatch(/Floridablanca|Bucaramanga|Bogotá|Santander/)
+  })
+
+  it('cada enlace del menú apunta a una sección que existe', () => {
+    const wrapper = mountApp()
+    for (const id of ['resuelvo', 'projects', 'services', 'skills', 'about', 'contact']) {
+      expect(wrapper.find(`#${id}`).exists(), id).toBe(true)
+    }
   })
 
   it('no publica correo ni teléfono en texto plano', () => {

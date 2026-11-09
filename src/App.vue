@@ -6,9 +6,9 @@ import SolveSection from './components/SolveSection.vue'
 import ProjectsSection from './components/ProjectsSection.vue'
 import ServicesSection from './components/ServicesSection.vue'
 import SkillsSection from './components/SkillsSection.vue'
-import AboutSection from './components/AboutSection.vue'
 import ContactSection from './components/ContactSection.vue'
 import SiteFooter from './components/SiteFooter.vue'
+import CustomCursor from './components/cursor/CustomCursor.vue'
 </script>
 
 <template>
@@ -16,21 +16,21 @@ import SiteFooter from './components/SiteFooter.vue'
   <MotionConfig reduced-motion="user">
     <a
       href="#main"
-      class="sr-only z-[60] rounded-md bg-green px-4 py-2 font-medium text-bg focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+      class="sr-only z-[60] rounded-md bg-accent px-4 py-2 font-medium text-bg focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
     >
       Saltar al contenido
     </a>
     <SiteHeader />
-    <!-- Orden de venta: hero > lo que resuelvo > proyectos > servicios > stack > sobre mí > contacto. -->
-    <main id="main" tabindex="-1">
+    <!-- Orden: hero > lo que resuelvo > proyectos > servicios > stack + sobre mí > contacto. -->
+    <main id="main" tabindex="-1" class="relative">
       <HeroSection />
       <SolveSection />
       <ProjectsSection />
       <ServicesSection />
       <SkillsSection />
-      <AboutSection />
       <ContactSection />
     </main>
     <SiteFooter />
+    <CustomCursor />
   </MotionConfig>
 </template>

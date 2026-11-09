@@ -8,8 +8,8 @@ import type { OtherWork, Project } from '@/types'
  *   Nada de notas internas ni proyectos ocultos.
  * - Solo datos confirmados en el README o en el código de cada repo. Nada inventado.
  * - Solo enlaces a repos públicos y revisados. Sin credenciales ni valores de .env.
- * - `result` se deja sin definir hasta que Alejandro confirme un resultado real
- *   (en los casos destacados se ve un TODO visible mientras tanto).
+ * - `problem` y `result` se dejan sin definir hasta que Alejandro los confirme:
+ *   el bloque se omite en pantalla (no se muestran TODO).
  * - El orden del arreglo es el orden en pantalla. Los `featured` van primero (Nodux primero).
  */
 export const projects: Project[] = [
@@ -18,12 +18,12 @@ export const projects: Project[] = [
     title: 'Nodux',
     context: 'Producto privado · Líder de equipo',
     featured: true,
-    // TODO: Alejandro debe describir el problema de negocio que resuelve Nodux (sin datos internos).
-    problem: 'TODO: describir el problema de negocio que resuelve Nodux.',
+    // Pendiente (Alejandro): el problema de negocio que resuelve Nodux, sin datos internos.
+    // Mientras no esté confirmado se omite el campo y el bloque no se muestra.
     summary:
       'Lidero el equipo de desarrollo de un producto privado: planifico tareas, reviso pull requests y coordino el trabajo de frontend, backend, QA y DevOps.',
     highlights: [],
-    // TODO: confirmar el stack público de Nodux (el equipo trabaja el backend en .NET / C#).
+    // Pendiente: confirmar el stack público de Nodux (el equipo trabaja el backend en .NET / C#).
     tech: ['C#', '.NET'],
     // Sin enlaces: el proyecto es privado.
     links: [],
