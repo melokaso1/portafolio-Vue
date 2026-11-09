@@ -13,20 +13,20 @@ export const solveItems: SolveItem[] = [
     title: 'APIs que escalan',
     description:
       'APIs REST en C# y ASP.NET Core con arquitectura limpia (hexagonal o Clean Architecture), EF Core, PostgreSQL y autenticación JWT con roles. Código ordenado que tu equipo puede mantener y crecer.',
-    proof: ['Inventario inteligente', 'ToDo hexagonal'],
+    proof: ['NexusOdonto API', 'HealtLab'],
   },
   {
     id: 'integraciones',
     title: 'Integraciones entre sistemas',
     description:
-      'Conecto tu backend con otros servicios y aplicaciones: chatbots que registran ventas y facturas en la API, bots de Telegram sobre Google Sheets y frontends en Vue o React.',
-    proof: ['Inventario inteligente', 'AgendaBot'],
+      'Conecto tu backend con otros servicios y aplicaciones: un agente de WhatsApp que agenda citas contra una API .NET, chatbots que registran ventas y facturas, notificaciones en tiempo real con SignalR y frontends en Vue o React.',
+    proof: ['NexusOdonto ChatBot AI', 'Inventario inteligente'],
   },
   {
     id: 'automatizaciones',
     title: 'Automatizaciones',
     description:
-      'Flujos en n8n y bots que se encargan del trabajo repetitivo: agendar, reprogramar y cancelar citas, registrar usuarios y mover datos entre herramientas.',
-    proof: ['AgendaBot'],
+      'Bots y flujos que se encargan del trabajo repetitivo: agendar, reprogramar y cancelar citas, enviar recordatorios y registrar ventas sin intervención manual.',
+    proof: ['NexusOdonto ChatBot AI', 'Inventario inteligente'],
   },
 ]

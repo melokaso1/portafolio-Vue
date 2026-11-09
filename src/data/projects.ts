@@ -29,8 +29,58 @@ export const projects: Project[] = [
     links: [],
   },
   {
-    id: 'inteligent-inventory',
+    id: 'nexus-odonto-api',
     featured: true,
+    title: 'NexusOdonto API',
+    context: 'Proyecto de equipo',
+    problem: 'Administrar una clínica odontológica completa: pacientes, agenda, historia clínica y odontograma.',
+    summary:
+      'API REST del sistema odontológico NexusOdonto en .NET 10 con Clean Architecture: pacientes e historia clínica, agenda con disponibilidad por profesional, odontograma, chatbot con escalamiento a tickets, notificaciones internas y por WhatsApp, y auditoría.',
+    highlights: [
+      'Clean Architecture en cuatro proyectos (Domain / Application / Infrastructure / Api): el acceso a datos pasa por repositorios y UnitOfWork.',
+      'JWT con refresh tokens y permisos granulares por módulo y acción.',
+      'Odontograma con notación FDI (52 piezas), estados por diente y hallazgos por superficie.',
+      'Se levanta con Docker Compose junto a Oracle: aplica migraciones y carga los catálogos.',
+    ],
+    tech: ['C#', '.NET 10', 'EF Core 10', 'Oracle', 'JWT', 'Docker'],
+    links: [{ label: 'Repositorio', url: 'https://github.com/NexusOdonto/NexusOdontoBackend_Api' }],
+  },
+  {
+    id: 'nexus-odonto-chatbot',
+    featured: true,
+    title: 'NexusOdonto ChatBot AI',
+    context: 'Proyecto de equipo',
+    problem: 'Atender pacientes por WhatsApp a cualquier hora y conectarlos con la agenda real de la clínica.',
+    summary:
+      'Agente conversacional para WhatsApp que consulta servicios y tarifas, y agenda, reprograma o cancela citas en tiempo real contra la API .NET de NexusOdonto. Entiende texto y notas de voz.',
+    highlights: [
+      'Grafo de LangGraph con herramientas atómicas de agenda y catálogo, y memoria de conversación en PostgreSQL.',
+      'RAG de conocimiento clínico con Qdrant y re-ranking.',
+      'Triage de emergencias odontológicas, transcripción de notas de voz con Whisper y recordatorios de citas.',
+    ],
+    tech: ['Python', 'FastAPI', 'LangGraph', 'Qdrant', 'PostgreSQL', 'WhatsApp (Evolution API)', 'Docker'],
+    links: [{ label: 'Repositorio', url: 'https://github.com/NexusOdonto/NexusOdonto_ChatBot_AI' }],
+  },
+  {
+    id: 'healtlab',
+    title: 'HealtLab',
+    context: 'Proyecto de equipo',
+    problem: 'Gestionar citas médicas, pacientes, personal y expedientes con permisos por rol.',
+    summary:
+      'Sistema de gestión de citas médicas: una API en .NET 10 con Clean Architecture y una SPA en React 19 con portales para administración, recepción y profesionales.',
+    highlights: [
+      'Notificaciones en tiempo real con SignalR, de la API al frontend.',
+      'Autenticación JWT con permisos por rol (Administrador, Recepcionista, Profesional) y documentación en Swagger.',
+      'EF Core Code-First sobre PostgreSQL (Supabase): migraciones y seed automáticos al arrancar.',
+    ],
+    tech: ['C#', '.NET 10', 'EF Core', 'PostgreSQL', 'SignalR', 'JWT', 'React 19', 'TypeScript'],
+    links: [
+      { label: 'Repo API', url: 'https://github.com/melokaso1/HEALTLABS_BACKEND' },
+      { label: 'Repo web', url: 'https://github.com/melokaso1/HEALTLAB_FRONTEND' },
+    ],
+  },
+  {
+    id: 'inteligent-inventory',
     title: 'Inventario inteligente (El Plonsazo)',
     context: 'Proyecto académico',
     problem: 'Gestionar inventario, ventas y facturación en un solo sistema, y permitir que los clientes compren por chat.',
@@ -39,38 +89,27 @@ export const projects: Project[] = [
     highlights: [
       'Arquitectura hexagonal (Domain / Application / Infrastructure / Api) con migraciones de EF Core y seed automático.',
       'Compra desde el chatbot en una sola transacción: valida el stock, crea la venta, descuenta el inventario, registra el movimiento y genera la factura.',
-      'Motor de reglas con máquina de estados en LangGraph (OpenAI opcional) y 21 archivos de prueba en pytest.',
+      'Motor de reglas con máquina de estados en LangGraph (OpenAI opcional) y pruebas en pytest.',
     ],
     tech: ['C#', '.NET 10', 'EF Core', 'PostgreSQL', 'JWT', 'Python', 'FastAPI', 'LangGraph', 'pytest', 'React 19', 'TypeScript', 'Tailwind CSS'],
-    links: [],
+    links: [
+      { label: 'Repo API', url: 'https://github.com/melokaso1/InteligentInventoryBackend' },
+      { label: 'Repo chatbot', url: 'https://github.com/melokaso1/InteligentInventoryLLMChatBot' },
+      { label: 'Repo web', url: 'https://github.com/melokaso1/InteligentInventoryFrontend' },
+    ],
   },
   {
-    id: 'agendabot',
-    title: 'AgendaBot',
-    featured: true,
-    context: 'Proyecto en pareja',
-    problem: 'Agendar y gestionar citas desde un chat de Telegram, usando Google Sheets como base de datos.',
+    id: 'gestion-mecanica',
+    title: 'Gestión de taller mecánico',
+    problem: 'Llevar clientes, vehículos, órdenes de servicio, repuestos y facturación de un taller automotriz.',
     summary:
-      'Bot de Telegram hecho con n8n para agendar, consultar, reprogramar, cancelar y completar citas desde un chat, con Google Sheets como base de datos.',
+      'Sistema de gestión para taller automotriz: API en ASP.NET Core, frontend en Blazor WebAssembly y un host de escritorio WPF (WebView2) que se distribuye como .exe y levanta la API en segundo plano.',
     highlights: [
-      'Registro automático de usuarios y sesiones por ID de Telegram para mantener el contexto de la conversación.',
-      'Ciclo completo de citas: agendar, consultar, reprogramar, cancelar y marcar como completada.',
+      'Roles Admin, Mecánico, Recepcionista y Cliente con JWT, CORS, Swagger y rate limiting.',
+      'Aplicación de escritorio "todo en uno": la UI y la API arrancan con un doble clic.',
     ],
-    tech: ['n8n', 'Telegram Bot API', 'Google Sheets API'],
-    links: [{ label: 'Repositorio', url: 'https://github.com/melokaso1/Proyecto_IA_Nivel1_EscobarAlejandro_Medina_Tomas' }],
-  },
-  {
-    id: 'todo-hexagonal',
-    title: 'ToDo - Arquitectura hexagonal',
-    problem: 'Mostrar la arquitectura hexagonal en la práctica con una API de tareas pequeña y completa.',
-    summary:
-      'API de tareas en C# hecha como guía práctica de arquitectura hexagonal, con un caso de uso por operación y un frontend en Vue 3 + TypeScript.',
-    highlights: [
-      'CRUD completo con filtro por estado y códigos HTTP correctos.',
-      'Un caso de uso por operación: crear, actualizar, eliminar, listar y obtener por id.',
-    ],
-    tech: ['C#', '.NET 10', 'Minimal APIs', 'EF Core', 'PostgreSQL', 'Vue 3', 'TypeScript', 'Vite'],
-    links: [],
+    tech: ['C#', '.NET 10', 'ASP.NET Core', 'EF Core', 'PostgreSQL', 'Blazor WebAssembly', 'WPF'],
+    links: [{ label: 'Repositorio', url: 'https://github.com/melokaso1/Proyecto-EFCORE-gestion-mecanica' }],
   },
   {
     id: 'liga-betplay',
@@ -121,29 +160,9 @@ export const projects: Project[] = [
 
 /** Otros trabajos conservados del portafolio anterior, en formato compacto. */
 export const otherWork: OtherWork[] = [
-  {
-    id: 'nexus-odonto',
-    title: 'Nexus Odonto (colaborador)',
-    summary:
-      'Plataforma para clínicas odontológicas (proyecto de equipo): citas, pacientes, roles RBAC, persistencia en Oracle, despliegue con Docker y un chatbot con IA. El código es privado; la documentación es pública.',
-    tech: ['C#', '.NET', 'Oracle', 'React', 'Docker'],
-    links: [{ label: 'Documentación', url: 'https://github.com/NexusOdonto/NexusOdonto_documentation' }],
-  },
-  {
-    id: 'gestion-mecanica',
-    title: 'Gestión de taller mecánico',
-    summary:
-      'Plataforma de gestión de taller: clientes, vehículos, órdenes de servicio y facturación. API en ASP.NET + Blazor WASM + host de escritorio WPF con roles JWT.',
-    tech: ['C#', '.NET', 'EF Core', 'PostgreSQL', 'Blazor', 'WPF'],
-    links: [],
-  },
-  {
-    id: 'transporte-migrations',
-    title: 'Transporte - Migraciones de BD',
-    summary: 'Dominio de transporte modelado con migraciones de EF Core y persistencia estructurada en C#.',
-    tech: ['C#', 'EF Core'],
-    links: [],
-  },
+
+
+
   {
     id: 'luxtime',
     title: 'LuxTime - Relojes de lujo',
