@@ -1,31 +1,29 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, ref } from 'vue'
-import PcIllustration from './pc/PcIllustration.vue'
-import { captionLine, holoArt, monograms, shortTitle } from './projects/projectArt'
+import ProjectCard from './projects/ProjectCard.vue'
+import { captionLine, monograms, shortTitle } from './projects/projectArt'
 import { projects } from '@/data/projects'
 import { personalInfo } from '@/data/profile'
 import { useFinePointer, useMinWidth } from '@/composables/useFinePointer'
 
 /**
- * Proyectos: Circular Carousel (preset orbit) con Holo Cards, ambos portados de React Bits.
+ * Proyectos: Circular Carousel (preset orbit, portado de React Bits) con tarjetas limpias.
  * Con puntero fino y sin reduced-motion se monta el carrusel (carga diferida); en táctil o con
- * reduced-motion queda una fila con scroll-snap, sin tilt ni foil.
+ * reduced-motion queda una fila con scroll-snap.
  */
 const CircularCarousel = defineAsyncComponent(() => import('./react-bits/CircularCarousel.vue'))
-const HoloCard = defineAsyncComponent(() => import('./react-bits/HoloCard.vue'))
 
 const finePointer = useFinePointer()
 const wide = useMinWidth(768)
 /** El carrusel 3D necesita mouse y ancho; si no, fila con scroll-snap. */
 const fine = computed(() => finePointer.value && wide.value)
-const cards = projects.map((p, i) => ({
+const cards = projects.map((p) => ({
   id: p.id,
   title: shortTitle(p.title),
   monogram: monograms[p.id] ?? p.title.slice(0, 2).toUpperCase(),
   tech: p.tech.slice(0, 3),
   caption: captionLine(p.problem, p.summary),
   links: p.links,
-  art: holoArt(i + 3),
 }))
 
 const active = ref(0)
@@ -44,10 +42,6 @@ const goTo = (i: number) => carousel.value?.focusIndex(i)
         </div>
         <div class="flex items-end gap-4">
           <p v-if="fine" class="hidden pb-2 font-mono text-xs text-muted md:block" aria-hidden="true">← arrastra para explorar →</p>
-          <div v-reveal class="w-[120px] lg:w-[220px]">
-            <PcIllustration :stage="2" />
-            <p class="pcl hidden text-right lg:block" aria-hidden="true">02 · GPU + monitor</p>
-          </div>
         </div>
       </div>
 
@@ -69,17 +63,7 @@ const goTo = (i: number) => carousel.value?.focusIndex(i)
             @change="active = $event"
           >
             <template #item="{ item, index, active: isActive }">
-              <HoloCard :image="cards[index]!.art" :active="isActive" class="h-full w-full">
-                <div class="pointer-events-none absolute inset-0 flex flex-col">
-                  <div class="flex h-[62%] items-center justify-center pt-3">
-                    <span class="font-display text-[56px] font-semibold tracking-[-0.03em] text-ink/90">{{ cards[index]!.monogram }}</span>
-                  </div>
-                  <div class="mt-auto px-5 pb-5">
-                    <p class="font-display text-[19px] font-semibold leading-tight text-ink">{{ item.title }}</p>
-                    <p class="mt-1 font-mono text-[11px] text-muted">{{ cards[index]!.tech.join(' · ') }}</p>
-                  </div>
-                </div>
-              </HoloCard>
+              <ProjectCard :monogram="cards[index]!.monogram" :title="item.title" :tech="cards[index]!.tech" :active="isActive" />
             </template>
           </CircularCarousel>
         </div>
@@ -114,15 +98,8 @@ const goTo = (i: number) => carousel.value?.focusIndex(i)
       <!-- Táctil / reduced-motion: fila con scroll-snap. -->
       <ul v-else class="-mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-4 [scrollbar-width:none] sm:mx-0 sm:px-0" aria-label="Proyectos">
         <li v-for="card in cards" :key="card.id" class="w-[240px] shrink-0 snap-center">
-          <div class="relative h-[320px] overflow-hidden rounded-2xl">
-            <img :src="card.art" alt="" class="absolute inset-0 h-full w-full" />
-            <div class="absolute inset-0 flex h-[62%] items-center justify-center pt-3" aria-hidden="true">
-              <span class="font-display text-[56px] font-semibold tracking-[-0.03em] text-ink/90">{{ card.monogram }}</span>
-            </div>
-            <div class="absolute inset-x-5 bottom-5">
-              <h3 class="font-display text-[19px] font-semibold leading-tight text-ink">{{ card.title }}</h3>
-              <p class="mt-1 font-mono text-[11px] text-muted">{{ card.tech.join(' · ') }}</p>
-            </div>
+          <div class="h-[320px]">
+            <ProjectCard :monogram="card.monogram" :title="card.title" :tech="card.tech" heading-tag="h3" />
           </div>
           <p class="mt-3 text-sm text-muted">{{ card.caption }}</p>
           <div v-if="card.links.length" class="mt-2 flex flex-wrap gap-3">

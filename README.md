@@ -23,10 +23,10 @@ npm run preview     # sirve el build
 
 Diseño: Figma "Rediseño v2" (paleta Grafito y ámbar: fondo `#0E0F11`, superficie `#16181B`, líneas `#2A2D32`, texto `#ECEAE6` / `#9C9A94` y un solo acento `#E8A33D`).
 
-- **Vue Bits** (https://vue-bits.dev): los componentes se copian al proyecto en `src/components/vue-bits/` desde su registro (`https://vue-bits.dev/r/<Componente>.json`): Tech Text, Branched Menu, Cubes y Magnet. Cada archivo indica su origen y los ajustes locales.
-- **React Bits** (https://reactbits.dev, licencia MIT + Commons Clause): Circular Carousel y Holo Card no existen en Vue Bits, así que están portados a Vue 3 + TypeScript en `src/components/react-bits/`. Cada archivo lleva la nota de atribución y la lista de cambios.
+- **Vue Bits** (https://vue-bits.dev): los componentes se copian al proyecto en `src/components/vue-bits/` desde su registro (`https://vue-bits.dev/r/<Componente>.json`): Tech Text, Branched Menu, Cubes (una sola instancia fija como fondo de toda la página: `src/components/background/BackgroundCubes.vue`) y Magnet. Cada archivo indica su origen y los ajustes locales.
+- **React Bits** (https://reactbits.dev, licencia MIT + Commons Clause): Circular Carousel no existe en Vue Bits, así que está portado a Vue 3 + TypeScript en `src/components/react-bits/`. El archivo lleva la nota de atribución y la lista de cambios.
 - **motion-v** (Motion para Vue): springs de tamaño del cursor propio (`src/components/cursor/CustomCursor.vue`; no usa Motion+). La posición va directa por `translate3d`, sin spring. El cursor y motion-v se cargan en un chunk aparte, solo con puntero fino y sin reduced-motion.
-- **GSAP** (+ ScrollTrigger): se registra en `src/lib/gsap.ts`. La historia del PC que se arma con el scroll es un SVG por capas propio (`src/components/pc/`), sin 3D.
+- **GSAP** (+ ScrollTrigger): se registra en `src/lib/gsap.ts`.
 - **PrimeVue 4** (licencia MIT; la v5 exige licencia comercial de PrimeUI y muestra un aviso "Invalid PrimeUI License"), en modo `unstyled` (sin tema Aura): `src/plugins/primevue.ts`. El Accordion de servicios va con Tailwind.
 
 ## Editar contenido
@@ -48,6 +48,6 @@ Reglas del contenido:
 
 ## Accesibilidad y animaciones
 
-- Con `prefers-reduced-motion` no hay scrub, cursor propio, Tech Text ni foil: se muestra el estado final estático.
-- En táctil (sin `(hover: hover) and (pointer: fine)`) el cursor es el nativo, el carrusel es una fila con scroll-snap y el PC es una miniatura por sección.
+- Con `prefers-reduced-motion` no hay scrub, cursor propio, ni Tech Text: se muestra el estado final estático.
+- En táctil (sin `(hover: hover) and (pointer: fine)`) el cursor es el nativo, el carrusel es una fila con scroll-snap y el fondo de cubos es una retícula estática en CSS.
 - Enlace "Saltar al contenido", foco visible, menú navegable con teclado y contraste AA.

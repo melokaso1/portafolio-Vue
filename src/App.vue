@@ -8,6 +8,7 @@ import ServicesSection from './components/ServicesSection.vue'
 import SkillsSection from './components/SkillsSection.vue'
 import ContactSection from './components/ContactSection.vue'
 import SiteFooter from './components/SiteFooter.vue'
+import BackgroundCubes from './components/background/BackgroundCubes.vue'
 import { useFinePointer } from './composables/useFinePointer'
 
 /** El cursor (y motion-v) se carga aparte y solo con puntero fino y sin reduced-motion. */
@@ -22,6 +23,7 @@ const fine = useFinePointer()
   >
     Saltar al contenido
   </a>
+  <BackgroundCubes />
   <SiteHeader />
   <!-- Orden: hero > lo que resuelvo > proyectos > servicios > stack + sobre mí > contacto. -->
   <main id="main" tabindex="-1" class="relative">

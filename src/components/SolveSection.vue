@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import TechHeading from './TechHeading.vue'
-import PcIllustration from './pc/PcIllustration.vue'
 import { solveItems } from '@/data/solve'
 
 /** Íconos de trazo fino (los mismos del Figma v2). */
@@ -16,25 +15,22 @@ const icons: Record<string, string[]> = {
 
 <template>
   <section id="resuelvo" class="section" aria-labelledby="resuelvo-title">
-    <div class="shell grid items-start gap-10 lg:grid-cols-[minmax(0,580px)_minmax(0,460px)]">
+    <div class="shell">
       <div>
         <div class="mb-3 flex items-end justify-between gap-4 lg:mb-10">
           <div class="min-w-0 flex-1">
             <p class="idx" aria-hidden="true">01</p>
             <TechHeading id="resuelvo-title" class="mt-2.5" text="Lo que resuelvo" />
           </div>
-          <div v-reveal class="w-[120px] shrink-0 lg:hidden">
-            <PcIllustration :stage="1" :animate="false" />
-          </div>
         </div>
-        <ul>
+        <ul class="lg:grid lg:grid-cols-3 lg:border-t lg:border-line">
           <li
             v-for="(item, i) in solveItems"
             :key="item.id"
             v-reveal="i * 90"
-            class="flex items-center gap-5 border-t border-line py-4 last:border-b lg:py-[22px]"
+            class="flex items-center gap-5 border-t border-line py-4 last:border-b lg:block lg:border-y-0 lg:py-7 lg:last:border-b-0 lg:pr-7 lg:[&:not(:first-child)]:border-l lg:[&:not(:first-child)]:border-line lg:[&:not(:first-child)]:pl-7"
           >
-            <svg class="hidden h-11 w-11 shrink-0 text-muted sm:block" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+            <svg class="hidden h-11 w-11 shrink-0 text-muted sm:block lg:mb-5" viewBox="0 0 44 44" fill="none" aria-hidden="true">
               <path
                 v-for="(d, k) in icons[item.id]"
                 :key="k"
@@ -52,12 +48,6 @@ const icons: Record<string, string[]> = {
             </div>
           </li>
         </ul>
-      </div>
-      <div class="pc-col">
-        <div class="pc-sticky">
-          <PcIllustration :stage="1" />
-          <p class="pcl" aria-hidden="true">01 · placa base + CPU</p>
-        </div>
       </div>
     </div>
   </section>

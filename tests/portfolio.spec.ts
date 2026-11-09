@@ -75,3 +75,23 @@ describe('App', () => {
     host.remove()
   })
 })
+
+describe('Fondo de cubos', () => {
+  it('hay una sola capa de fondo, decorativa y sin ilustración del PC', () => {
+    const wrapper = mountApp()
+    const bg = wrapper.findAll('#bg-cubes')
+    expect(bg).toHaveLength(1)
+    expect(bg[0]!.attributes('aria-hidden')).toBe('true')
+    expect(wrapper.find('[data-part]').exists()).toBe(false)
+    expect(wrapper.html()).not.toContain('placa base')
+  })
+})
+
+describe('Tarjetas de proyecto', () => {
+  it('son limpias: sin arte de foil ni canvas WebGL', () => {
+    const projects = mountApp().find('#projects')
+    expect(projects.findAll('.project-card').length).toBeGreaterThan(0)
+    expect(projects.find('canvas').exists()).toBe(false)
+    expect(projects.find('img[src^="data:image/svg"]').exists()).toBe(false)
+  })
+})

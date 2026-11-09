@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { defineAsyncComponent, onBeforeUnmount, onMounted, ref } from 'vue'
-import PcIllustration from './pc/PcIllustration.vue'
 import { hero } from '@/data/hero'
 import { personalInfo } from '@/data/profile'
 import { useFinePointer } from '@/composables/useFinePointer'
 
-const Cubes = defineAsyncComponent(() => import('./vue-bits/Cubes.vue'))
 const TechText = defineAsyncComponent(() => import('./vue-bits/TechText.vue'))
 const fine = useFinePointer()
 
@@ -34,33 +32,19 @@ onBeforeUnmount(() => ro?.disconnect())
 </script>
 
 <template>
-  <section id="hero" class="relative overflow-hidden pb-16 pt-[92px] lg:min-h-[640px] lg:pb-12 lg:pt-[120px]" aria-labelledby="hero-title">
-    <!-- Fondo: Cubes (Vue Bits) con puntero fino; si no, una retícula estática punteada. -->
-    <div class="hero-fade pointer-events-auto absolute inset-0 -z-0" aria-hidden="true">
-      <div v-if="fine" class="absolute inset-x-0 top-0">
-        <Cubes
-          :grid-size="20"
-          :max-angle="40"
-          :radius="3"
-          :cell-gap="14"
-          border-style="1px dashed #2A2D32"
-          face-color="#0E0F11"
-          :auto-animate="false"
-          :ripple-on-click="false"
-        />
-      </div>
-      <div v-else class="cube-grid absolute inset-0" />
-    </div>
-
-    <div class="shell relative grid items-start gap-10 lg:grid-cols-[minmax(0,580px)_minmax(0,460px)]">
-      <div class="pointer-events-none relative z-10 [&_a]:pointer-events-auto">
-        <p class="inline-flex items-center gap-2 rounded-full border border-line bg-bg px-3 py-1.5 text-[13px] text-muted">
-          <span class="h-1.5 w-1.5 rounded-full bg-ink" aria-hidden="true" />
+  <section id="hero" class="relative pb-16 pt-[92px] lg:min-h-[600px] lg:pb-12 lg:pt-[120px]" aria-labelledby="hero-title">
+    <div class="shell relative">
+      <div class="relative z-10 max-w-[760px]">
+        <!-- Eyebrow de estado: texto mono gris con un punto ámbar (pulso suave, sin pulso con reduced-motion). -->
+        <p class="status-eyebrow flex items-center gap-2.5 font-mono text-[11px] tracking-[0.02em] text-muted sm:text-xs sm:tracking-[0.04em] lg:text-[13px]">
+          <span class="status-dot relative inline-flex h-1.5 w-1.5 shrink-0" aria-hidden="true">
+            <span class="absolute inset-0 rounded-full bg-accent" />
+          </span>
           {{ hero.badge }}
         </p>
 
         <p class="sr-only">{{ personalInfo.name }}</p>
-        <div ref="wordmarkRef" class="pointer-events-auto mt-5 lg:mt-6" aria-hidden="true">
+        <div ref="wordmarkRef" class="mt-5 lg:mt-6" aria-hidden="true">
           <template v-if="fine">
             <div v-for="word in wordmark" :key="word" :style="{ height: `${Math.round(wordSize * 1.12)}px` }">
               <TechText
@@ -103,41 +87,34 @@ onBeforeUnmount(() => ro?.disconnect())
           </a>
         </div>
       </div>
-
-      <div v-reveal class="pointer-events-none relative z-10 mx-auto w-full max-w-[300px] lg:mt-[-20px] lg:max-w-none">
-        <PcIllustration :stage="0" />
-      </div>
     </div>
   </section>
 </template>
 
 <style scoped>
-/*
- * Las aristas punteadas de Cubes no deben pasar por detrás del nombre ni del texto: entre letras
- * (A-l, j-a, c-o, b-a) se veían como columnas de glifos diminutos. El fondo se desvanece en la
- * columna de texto y hacia abajo; los cubos quedan visibles a la derecha, detrás del PC.
- */
-.hero-fade {
-  -webkit-mask-image:
-    linear-gradient(to bottom, #000 35%, transparent 100%),
-    linear-gradient(to right, transparent 0%, transparent 56%, #000 74%);
-  mask-image:
-    linear-gradient(to bottom, #000 35%, transparent 100%),
-    linear-gradient(to right, transparent 0%, transparent 56%, #000 74%);
-  -webkit-mask-composite: source-in;
-  mask-composite: intersect;
+.status-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: rgb(var(--accent));
+  opacity: 0;
+  animation: status-pulse 2.4s ease-out infinite;
 }
-@media (max-width: 1023px) {
-  .hero-fade {
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 62%, #000 82%, transparent 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, transparent 62%, #000 82%, transparent 100%);
+@keyframes status-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  70%,
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
   }
 }
-.cube-grid {
-  background-image:
-    linear-gradient(to right, rgb(var(--line)) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(var(--line)) 1px, transparent 1px);
-  background-size: 57px 57px;
-  opacity: 0.55;
+@media (prefers-reduced-motion: reduce) {
+  .status-dot::after {
+    animation: none;
+  }
 }
 </style>
