@@ -104,3 +104,17 @@ describe('Contacto: CTA con Magnet', () => {
     expect(github.classes()).toEqual(expect.arrayContaining(['relative', 'z-10', 'sm:ml-7']))
   })
 })
+
+describe('Menú: Stack · Sobre mí', () => {
+  it('un solo ítem para la sección 04 y apunta a #skills', async () => {
+    const { navLinks, navGroups } = await import('@/data/nav')
+    expect(navLinks.filter((l) => l.id === 'skills')).toHaveLength(1)
+    expect(navLinks.find((l) => l.id === 'skills')?.label).toBe('Stack · Sobre mí')
+    expect(navLinks.some((l) => l.id === 'about')).toBe(false)
+    expect(navGroups.find((g) => g.label === 'Perfil')?.ids).toEqual(['skills', 'contact'])
+    const header = mountApp().find('header')
+    const labels = header.findAll('button, a').map((b) => b.text().trim())
+    expect(labels.filter((t) => t === 'Sobre mí')).toHaveLength(0)
+    expect(labels.filter((t) => t.includes('Stack · Sobre mí')).length).toBeGreaterThan(0)
+  })
+})
