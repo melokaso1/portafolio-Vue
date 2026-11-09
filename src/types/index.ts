@@ -49,13 +49,6 @@ export interface SkillGroup {
   skills: string[]
 }
 
-export interface LearningItem {
-  id: string
-  title: string
-  subtitle: string
-  status: 'in-progress' | 'completed'
-}
-
 export interface PersonalInfo {
   name: string
   handle: string
