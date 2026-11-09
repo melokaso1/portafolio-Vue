@@ -22,7 +22,6 @@ describe('datos de proyectos', () => {
       'gestion-mecanica',
       'liga-betplay',
       'abc-lms',
-      'dataset-editor',
     ])
   })
 
@@ -55,7 +54,7 @@ describe('datos de proyectos', () => {
 
   it('no incluye proyectos retirados ni cifras de pruebas sin verificar', () => {
     const data = JSON.stringify(projectData)
-    for (const id of ['agendabot', 'todo-hexagonal', 'transporte-migrations']) expect(data).not.toContain(id)
+    for (const id of ['agendabot', 'todo-hexagonal', 'transporte-migrations', 'dataset-editor', 'TrendGear', 'datasetEditorApp']) expect(data).not.toContain(id)
     expect(data).not.toMatch(/\d+\s+(archivos de prueba|tests)/i)
   })
 

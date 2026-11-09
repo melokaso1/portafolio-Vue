@@ -8,7 +8,6 @@ export const monograms: Record<string, string> = {
   'gestion-mecanica': 'GM',
   'liga-betplay': 'LB',
   'abc-lms': 'LMS',
-  'dataset-editor': 'TG',
 }
 
 /** Título corto para la tarjeta: sin el paréntesis. */
