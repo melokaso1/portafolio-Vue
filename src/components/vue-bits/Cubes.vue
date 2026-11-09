@@ -1,16 +1,24 @@
 <!--
   Vue Bits (Cubes) - https://vue-bits.dev
   Copiado desde el registro oficial: https://vue-bits.dev/r/Cubes.json
-  Ajustes locales: el contenedor ocupa el ancho del padre (w-full) en lugar de w-1/2; se usa con autoAnimate=false para no animar en bucle.
+  Ajustes locales:
+  - el contenedor ocupa el ancho del padre (w-full) en lugar de w-1/2; se usa con autoAnimate=false.
+  - `columns` / `rows` para una retícula rectangular (fondo de toda la página) y `fill` para
+    ocupar el alto del padre en vez de ser cuadrada.
+  - `listenWindow`: escucha el puntero en window (el fondo queda detrás del contenido), con
+    rAF y el rectángulo cacheado (sin getBoundingClientRect en cada movimiento).
+  - Solo se animan los cubos cerca del puntero (y los que vuelven a 0), no toda la retícula.
+  - Se pausa con la pestaña oculta.
 -->
 <template>
-  <div class="relative w-full aspect-square" :style="wrapperStyle">
+  <div class="relative w-full" :class="fill ? 'h-full' : 'aspect-square'" :style="wrapperStyle">
     <div ref="sceneRef" class="grid w-full h-full" :style="sceneStyle">
-      <template v-for="(_, r) in cells" :key="`row-${r}`">
+      <template v-for="(_, r) in rowCells" :key="`row-${r}`">
         <div
-          v-for="(__, c) in cells"
+          v-for="(__, c) in colCells"
           :key="`${r}-${c}`"
-          class="relative w-full h-full aspect-square transform-3d cube"
+          class="relative w-full h-full transform-3d cube"
+          :class="fill ? '' : 'aspect-square'"
           :data-row="r"
           :data-col="c"
         >
@@ -82,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, useTemplateRef } from 'vue';
+import { ref, computed, onMounted, onUnmounted, useTemplateRef, watch } from 'vue';
 import gsap from 'gsap';
 
 interface Gap {
@@ -110,6 +118,10 @@ interface Props {
   rippleOnClick?: boolean;
   rippleColor?: string;
   rippleSpeed?: number;
+  columns?: number;
+  rows?: number;
+  fill?: boolean;
+  listenWindow?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -124,7 +136,11 @@ const props = withDefaults(defineProps<Props>(), {
   autoAnimate: true,
   rippleOnClick: true,
   rippleColor: '#fff',
-  rippleSpeed: 2
+  rippleSpeed: 2,
+  columns: undefined,
+  rows: undefined,
+  fill: false,
+  listenWindow: false
 });
 
 const sceneRef = useTemplateRef<HTMLDivElement>('sceneRef');
@@ -154,15 +170,18 @@ const rowGap = computed(() => {
 const enterDur = computed(() => props.duration.enter);
 const leaveDur = computed(() => props.duration.leave);
 
-const cells = computed(() => Array.from({ length: props.gridSize }));
+const colCount = computed(() => props.columns ?? props.gridSize);
+const rowCount = computed(() => props.rows ?? props.gridSize);
+const colCells = computed(() => Array.from({ length: colCount.value }));
+const rowCells = computed(() => Array.from({ length: rowCount.value }));
 
 const sceneStyle = computed(() => ({
   gridTemplateColumns: props.cubeSize
-    ? `repeat(${props.gridSize}, ${props.cubeSize}px)`
-    : `repeat(${props.gridSize}, 1fr)`,
+    ? `repeat(${colCount.value}, ${props.cubeSize}px)`
+    : `repeat(${colCount.value}, 1fr)`,
   gridTemplateRows: props.cubeSize
-    ? `repeat(${props.gridSize}, ${props.cubeSize}px)`
-    : `repeat(${props.gridSize}, 1fr)`,
+    ? `repeat(${rowCount.value}, ${props.cubeSize}px)`
+    : `repeat(${rowCount.value}, 1fr)`,
   columnGap: colGap.value,
   rowGap: rowGap.value,
   perspective: '99999999px',
@@ -181,43 +200,62 @@ const wrapperStyle = computed(() => ({
     : {})
 }));
 
+let cubeEls: HTMLDivElement[] = [];
+const tilted = new Set<HTMLDivElement>();
+const cubesList = () => {
+  if (!cubeEls.length && sceneRef.value) cubeEls = Array.from(sceneRef.value.querySelectorAll<HTMLDivElement>('.cube'));
+  return cubeEls;
+};
+
+/** Inclina solo los cubos dentro del radio; los que salieron del radio vuelven a 0. */
 const tiltAt = (rowCenter: number, colCenter: number) => {
   if (!sceneRef.value) return;
-
-  sceneRef.value.querySelectorAll<HTMLDivElement>('.cube').forEach(cube => {
-    const r = +cube.dataset.row!;
-    const c = +cube.dataset.col!;
-    const dist = Math.hypot(r - rowCenter, c - colCenter);
-
-    if (dist <= props.radius) {
-      const pct = 1 - dist / props.radius;
-      const angle = pct * props.maxAngle;
-      gsap.to(cube, {
-        duration: enterDur.value,
-        ease: props.easing,
-        overwrite: true,
-        rotateX: -angle,
-        rotateY: angle
-      });
-    } else {
-      gsap.to(cube, {
-        duration: leaveDur.value,
-        ease: 'power3.out',
-        overwrite: true,
-        rotateX: 0,
-        rotateY: 0
-      });
+  const cols = colCount.value;
+  const list = cubesList();
+  const next = new Set<HTMLDivElement>();
+  const r0 = Math.max(0, Math.floor(rowCenter - props.radius));
+  const r1 = Math.min(rowCount.value - 1, Math.ceil(rowCenter + props.radius));
+  const c0 = Math.max(0, Math.floor(colCenter - props.radius));
+  const c1 = Math.min(cols - 1, Math.ceil(colCenter + props.radius));
+  for (let r = r0; r <= r1; r++) {
+    for (let c = c0; c <= c1; c++) {
+      const cube = list[r * cols + c];
+      if (!cube) continue;
+      const dist = Math.hypot(r - rowCenter, c - colCenter);
+      if (dist > props.radius) continue;
+      const angle = (1 - dist / props.radius) * props.maxAngle;
+      next.add(cube);
+      gsap.to(cube, { duration: enterDur.value, ease: props.easing, overwrite: true, rotateX: -angle, rotateY: angle });
     }
+  }
+  tilted.forEach(cube => {
+    if (next.has(cube)) return;
+    gsap.to(cube, { duration: leaveDur.value, ease: 'power3.out', overwrite: true, rotateX: 0, rotateY: 0 });
   });
+  tilted.clear();
+  next.forEach(cube => tilted.add(cube));
+};
+
+watch([colCount, rowCount], () => {
+  cubeEls = [];
+  tilted.clear();
+  rect = null;
+});
+
+let rect: DOMRect | null = null;
+const measure = () => {
+  rect = sceneRef.value?.getBoundingClientRect() ?? null;
 };
 
 const onPointerMove = (e: PointerEvent) => {
   userActiveRef.value = true;
   if (idleTimerRef.value) clearTimeout(idleTimerRef.value);
 
-  const rect = sceneRef.value!.getBoundingClientRect();
-  const cellW = rect.width / props.gridSize;
-  const cellH = rect.height / props.gridSize;
+  if (document.hidden) return;
+  if (!rect || !props.listenWindow) measure();
+  if (!rect) return;
+  const cellW = rect.width / colCount.value;
+  const cellH = rect.height / rowCount.value;
   const colCenter = (e.clientX - rect.left) / cellW;
   const rowCenter = (e.clientY - rect.top) / cellH;
 
@@ -231,7 +269,8 @@ const onPointerMove = (e: PointerEvent) => {
 
 const resetAll = () => {
   if (!sceneRef.value) return;
-  sceneRef.value.querySelectorAll<HTMLDivElement>('.cube').forEach(cube =>
+  tilted.clear();
+  cubesList().forEach(cube =>
     gsap.to(cube, {
       duration: leaveDur.value,
       rotateX: 0,
@@ -243,10 +282,12 @@ const resetAll = () => {
 
 const onClick = (e: MouseEvent) => {
   if (!props.rippleOnClick || !sceneRef.value) return;
+  if (props.listenWindow && (e.target as Element | null)?.closest?.('a, button, input, textarea, select, [role="button"], [data-cursor]')) return;
 
-  const rect = sceneRef.value.getBoundingClientRect();
-  const cellW = rect.width / props.gridSize;
-  const cellH = rect.height / props.gridSize;
+  measure();
+  if (!rect) return;
+  const cellW = rect.width / colCount.value;
+  const cellH = rect.height / rowCount.value;
   const colHit = Math.floor((e.clientX - rect.left) / cellW);
   const rowHit = Math.floor((e.clientY - rect.top) / cellH);
 
@@ -259,7 +300,7 @@ const onClick = (e: MouseEvent) => {
   const holdTime = baseHold / props.rippleSpeed;
 
   const rings: Record<number, HTMLDivElement[]> = {};
-  sceneRef.value.querySelectorAll<HTMLDivElement>('.cube').forEach(cube => {
+  cubesList().forEach(cube => {
     const r = +cube.dataset.row!;
     const c = +cube.dataset.col!;
     const dist = Math.hypot(r - rowHit, c - colHit);
@@ -327,15 +368,27 @@ onMounted(() => {
   const el = sceneRef.value;
   if (!el) return;
 
-  el.addEventListener('pointermove', onPointerMove);
-  el.addEventListener('pointerleave', resetAll);
-  el.addEventListener('click', onClick);
+  if (props.listenWindow) {
+    measure();
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    window.addEventListener('resize', measure, { passive: true });
+    document.documentElement.addEventListener('pointerleave', resetAll);
+    window.addEventListener('click', onClick);
+  } else {
+    el.addEventListener('pointermove', onPointerMove);
+    el.addEventListener('pointerleave', resetAll);
+    el.addEventListener('click', onClick);
+  }
 
   startAutoAnimation();
 });
 
 onUnmounted(() => {
   const el = sceneRef.value;
+  window.removeEventListener('pointermove', onPointerMove);
+  window.removeEventListener('resize', measure);
+  document.documentElement.removeEventListener('pointerleave', resetAll);
+  window.removeEventListener('click', onClick);
   if (el) {
     el.removeEventListener('pointermove', onPointerMove);
     el.removeEventListener('pointerleave', resetAll);

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent, ref } from 'vue'
-import PcIllustration from './pc/PcIllustration.vue'
 import ProjectCard from './projects/ProjectCard.vue'
 import { captionLine, monograms, shortTitle } from './projects/projectArt'
 import { projects } from '@/data/projects'
@@ -43,10 +42,6 @@ const goTo = (i: number) => carousel.value?.focusIndex(i)
         </div>
         <div class="flex items-end gap-4">
           <p v-if="fine" class="hidden pb-2 font-mono text-xs text-muted md:block" aria-hidden="true">← arrastra para explorar →</p>
-          <div v-reveal class="w-[120px] lg:w-[220px]">
-            <PcIllustration :stage="2" />
-            <p class="pcl hidden text-right lg:block" aria-hidden="true">02 · GPU + monitor</p>
-          </div>
         </div>
       </div>
 

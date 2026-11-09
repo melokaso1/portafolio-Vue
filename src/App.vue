@@ -9,6 +9,7 @@ import SkillsSection from './components/SkillsSection.vue'
 import ContactSection from './components/ContactSection.vue'
 import SiteFooter from './components/SiteFooter.vue'
 import CustomCursor from './components/cursor/CustomCursor.vue'
+import BackgroundCubes from './components/background/BackgroundCubes.vue'
 </script>
 
 <template>
@@ -20,6 +21,7 @@ import CustomCursor from './components/cursor/CustomCursor.vue'
     >
       Saltar al contenido
     </a>
+    <BackgroundCubes />
     <SiteHeader />
     <!-- Orden: hero > lo que resuelvo > proyectos > servicios > stack + sobre mí > contacto. -->
     <main id="main" tabindex="-1" class="relative">

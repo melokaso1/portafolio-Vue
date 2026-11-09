@@ -130,15 +130,3 @@
   }
 }
 
-/* Escenario del PC (columna derecha de las secciones divididas). */
-@layer components {
-  .pc-col {
-    @apply hidden self-stretch lg:block;
-  }
-  .pc-sticky {
-    @apply sticky top-24 pt-5;
-  }
-  .pcl {
-    @apply mt-1 text-center font-mono text-[11px] text-muted;
-  }
-}
