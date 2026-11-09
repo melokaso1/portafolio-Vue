@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import SectionHeading from './SectionHeading.vue'
 import ProjectCard from './ProjectCard.vue'
-import { leadership, otherWork, projects } from '@/data/projects'
+import MotionReveal from '@/components/motion/MotionReveal.vue'
+import { otherWork, projects } from '@/data/projects'
+
+const featured = projects.filter((p) => p.featured)
+const more = projects.filter((p) => !p.featured)
 </script>
 
 <template>
@@ -10,26 +14,22 @@ import { leadership, otherWork, projects } from '@/data/projects'
       id="projects"
       command="ls ./projects --featured"
       title="Proyectos"
-      description="Sistemas que construí o en los que participé, presentados como casos de estudio."
+      description="Casos reales: el problema, cómo lo resolví y el resultado."
     />
 
-    <ul class="grid gap-5 md:grid-cols-2">
-      <li v-for="(project, i) in projects" :key="project.id" v-reveal="(i % 2) * 80">
-        <ProjectCard :project="project" />
+    <ul class="space-y-6">
+      <li v-for="project in featured" :key="project.id">
+        <MotionReveal>
+          <ProjectCard :project="project" featured />
+        </MotionReveal>
       </li>
     </ul>
 
-    <div v-if="leadership.length" class="mt-14">
-      <h3 v-reveal class="font-mono text-sm text-green">// liderazgo</h3>
+    <div v-if="more.length" class="mt-14">
+      <h3 v-reveal class="font-mono text-sm text-green">// más proyectos</h3>
       <ul class="mt-4 grid gap-5 md:grid-cols-2">
-        <li v-for="item in leadership" :key="item.id" v-reveal class="card p-6">
-          <p class="text-lg font-semibold text-text">
-            {{ item.title }}
-            <span class="ml-2 rounded-full border border-green/40 px-2 py-0.5 align-middle font-mono text-[11px] text-green">
-              {{ item.role }}
-            </span>
-          </p>
-          <p class="mt-3 leading-relaxed text-text/85">{{ item.summary }}</p>
+        <li v-for="(project, i) in more" :key="project.id" v-reveal="(i % 2) * 80">
+          <ProjectCard :project="project" />
         </li>
       </ul>
     </div>
