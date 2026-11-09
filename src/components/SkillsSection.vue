@@ -6,9 +6,15 @@ import { aboutShown } from '@/data/about'
 /** Stack + Sobre mí en una sola sección (#skills contiene #about). Sin ubicación en pantalla. */
 const languages = skillGroups.find((g) => g.category === 'Idiomas')?.skills ?? []
 
+/** Foco que sigue al puntero: el rect se mide al entrar en la tarjeta, no en cada movimiento. */
+const rects = new WeakMap<HTMLElement, DOMRect>()
+const enter = (e: PointerEvent) => {
+  const el = e.currentTarget as HTMLElement
+  rects.set(el, el.getBoundingClientRect())
+}
 const spot = (e: PointerEvent) => {
   const el = e.currentTarget as HTMLElement
-  const rect = el.getBoundingClientRect()
+  const rect = rects.get(el) ?? el.getBoundingClientRect()
   el.style.setProperty('--mx', `${e.clientX - rect.left}px`)
   el.style.setProperty('--my', `${e.clientY - rect.top}px`)
 }
@@ -44,6 +50,7 @@ const spot = (e: PointerEvent) => {
                 v-for="item in coreStack"
                 :key="item.name"
                 class="tile relative bg-surface p-4 lg:p-6"
+                @pointerenter="enter"
                 @pointermove="spot"
               >
                 <p class="font-display text-[19px] font-semibold text-ink lg:text-[22px]">{{ item.name }}</p>
