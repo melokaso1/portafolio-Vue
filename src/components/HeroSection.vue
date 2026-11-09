@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue'
+import { defineAsyncComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import PcIllustration from './pc/PcIllustration.vue'
 import { hero } from '@/data/hero'
 import { personalInfo } from '@/data/profile'
@@ -11,6 +11,26 @@ const fine = useFinePointer()
 
 const [titleStart, titleEnd] = hero.title.split('.NET')
 const wordmark = ['Alejandro', 'Escobar']
+
+/**
+ * Un solo tamaño para las dos líneas: se calcula con el ancho de la columna y la palabra más
+ * larga ("Alejandro" mide ~4.1 veces el tamaño de letra en Inter Tight 600).
+ */
+const wordmarkRef = ref<HTMLElement | null>(null)
+const wordSize = ref(104)
+let ro: ResizeObserver | null = null
+onMounted(() => {
+  const update = () => {
+    const w = wordmarkRef.value?.clientWidth ?? 0
+    if (w) wordSize.value = Math.min(104, Math.floor((w * 0.97) / 4.1))
+  }
+  update()
+  if (typeof ResizeObserver !== 'undefined' && wordmarkRef.value) {
+    ro = new ResizeObserver(update)
+    ro.observe(wordmarkRef.value)
+  }
+})
+onBeforeUnmount(() => ro?.disconnect())
 </script>
 
 <template>
@@ -40,14 +60,14 @@ const wordmark = ['Alejandro', 'Escobar']
         </p>
 
         <p class="sr-only">{{ personalInfo.name }}</p>
-        <div class="pointer-events-auto mt-5 lg:mt-6" aria-hidden="true">
+        <div ref="wordmarkRef" class="pointer-events-auto mt-5 lg:mt-6" aria-hidden="true">
           <template v-if="fine">
-            <div v-for="word in wordmark" :key="word" class="h-[90px] lg:h-[116px]">
+            <div v-for="word in wordmark" :key="word" :style="{ height: `${Math.round(wordSize * 1.12)}px` }">
               <TechText
                 :text="word"
                 font-family="Inter Tight, Inter, sans-serif"
                 :font-weight="600"
-                :font-size="104"
+                :font-size="wordSize"
                 :letter-spacing="-0.03"
                 color="#ECEAE6"
                 accent-color="#E8A33D"
@@ -59,6 +79,7 @@ const wordmark = ['Alejandro', 'Escobar']
                 :sweep="false"
                 reveal="area"
                 align="left"
+                fixed-size
               />
             </div>
           </template>
@@ -91,9 +112,26 @@ const wordmark = ['Alejandro', 'Escobar']
 </template>
 
 <style scoped>
+/*
+ * Las aristas punteadas de Cubes no deben pasar por detrás del nombre ni del texto: entre letras
+ * (A-l, j-a, c-o, b-a) se veían como columnas de glifos diminutos. El fondo se desvanece en la
+ * columna de texto y hacia abajo; los cubos quedan visibles a la derecha, detrás del PC.
+ */
 .hero-fade {
-  -webkit-mask-image: linear-gradient(to bottom, #000 35%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 35%, transparent 100%);
+  -webkit-mask-image:
+    linear-gradient(to bottom, #000 35%, transparent 100%),
+    linear-gradient(to right, transparent 0%, transparent 56%, #000 74%);
+  mask-image:
+    linear-gradient(to bottom, #000 35%, transparent 100%),
+    linear-gradient(to right, transparent 0%, transparent 56%, #000 74%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+@media (max-width: 1023px) {
+  .hero-fade {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 62%, #000 82%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, transparent 62%, #000 82%, transparent 100%);
+  }
 }
 .cube-grid {
   background-image:
