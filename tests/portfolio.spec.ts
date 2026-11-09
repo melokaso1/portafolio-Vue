@@ -84,6 +84,9 @@ describe('Fondo de cubos', () => {
     expect(bg[0]!.attributes('aria-hidden')).toBe('true')
     expect(wrapper.find('[data-part]').exists()).toBe(false)
     expect(wrapper.html()).not.toContain('placa base')
+    // Sin cubos 3D en el DOM: el fondo es una retícula CSS (+ un canvas con puntero fino).
+    expect(wrapper.find('#bg-cubes .cube').exists()).toBe(false)
+    expect(wrapper.find('#bg-cubes .static-grid').exists()).toBe(true)
   })
 })
 
