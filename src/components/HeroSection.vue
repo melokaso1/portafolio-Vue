@@ -61,26 +61,13 @@ onMounted(() => {
           <Button as="a" :href="hero.primaryCta.href" :label="hero.primaryCta.label" class="btn btn-primary w-full justify-center" />
         </Magnet>
 
-        <a v-if="hero.cvUrl" :href="hero.cvUrl" download class="btn btn-ghost justify-center">
-          {{ hero.cvCta.label }} <span aria-hidden="true">↓</span>
+        <a :href="personalInfo.linkedin" target="_blank" rel="noopener noreferrer" class="btn btn-ghost justify-center">
+          {{ hero.linkedinCta.label }} <span aria-hidden="true">↗</span><span class="sr-only"> (se abre en una pestaña nueva)</span>
         </a>
-        <!-- TODO: falta el CV en PDF (ver src/data/hero.ts). -->
-        <span
-          v-else
-          class="btn btn-ghost cursor-not-allowed justify-center opacity-60"
-          aria-disabled="true"
-          title="CV pendiente de publicar"
-        >
-          {{ hero.cvCta.label }} <span class="text-xs text-muted">(TODO: CV pendiente)</span>
-        </span>
       </div>
 
       <p class="mt-8 text-sm text-muted">
-        ¿Prefieres revisar mi perfil primero?
-        <a :href="personalInfo.linkedin" target="_blank" rel="noopener noreferrer" class="link-inline">
-          LinkedIn <span aria-hidden="true">↗</span><span class="sr-only"> (se abre en una pestaña nueva)</span>
-        </a>
-        ·
+        ¿Quieres ver mi código?
         <a :href="personalInfo.github" target="_blank" rel="noopener noreferrer" class="link-inline">
           GitHub <span aria-hidden="true">↗</span><span class="sr-only"> (se abre en una pestaña nueva)</span>
         </a>

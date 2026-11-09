@@ -16,9 +16,18 @@ describe('Hero', () => {
     expect(hero.find('a[href="#contact"]').text()).toContain('Cuéntame tu proyecto')
   })
 
-  it('muestra "Descargar CV" (pendiente mientras no haya PDF)', () => {
+  it('el botón secundario lleva al LinkedIn real en una pestaña nueva', () => {
+    const link = mountApp().find('#hero a.btn[href="https://www.linkedin.com/in/alejandro-escobar-9b7590365"]')
+    expect(link.exists()).toBe(true)
+    expect(link.text()).toContain('Ver perfil en LinkedIn')
+    expect(link.attributes('target')).toBe('_blank')
+    expect(link.attributes('rel')).toBe('noopener noreferrer')
+  })
+
+  it('ya no ofrece descargar un CV', () => {
     const hero = mountApp().find('#hero')
-    expect(hero.text()).toContain('Descargar CV')
+    expect(hero.text()).not.toContain('Descargar CV')
+    expect(hero.find('a[download]').exists()).toBe(false)
   })
 
   it('enlaza LinkedIn y GitHub reales', () => {

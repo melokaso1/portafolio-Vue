@@ -5,8 +5,6 @@ export const hero = {
   subtitle:
     'C# y ASP.NET Core, integraciones y bases de datos. Disponible remoto, en Bogotá o por proyecto freelance.',
   primaryCta: { label: 'Cuéntame tu proyecto', href: '#contact' },
-  cvCta: { label: 'Descargar CV' },
-  // TODO: Alejandro debe aportar el CV en PDF. Guardarlo como public/cv-alejandro-escobar.pdf
-  // y poner aquí '/cv-alejandro-escobar.pdf'. Mientras esté vacío, el botón se muestra como pendiente.
-  cvUrl: '',
+  /** Botón secundario: lleva al perfil de LinkedIn (la URL sale de personalInfo.linkedin). */
+  linkedinCta: { label: 'Ver perfil en LinkedIn' },
 }
