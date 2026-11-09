@@ -1,23 +1,29 @@
 import type { Service } from '@/types'
 
-/** Servicios de "Trabaja conmigo". Cada uno se apoya en proyectos publicados. */
+/**
+ * Servicios freelance. Cada uno se apoya en proyectos publicados del portafolio.
+ * No incluir facturación DIAN ni pasarelas de pago hasta que Alejandro lo confirme.
+ */
 export const services: Service[] = [
   {
-    id: 'apis-dotnet',
-    title: 'APIs .NET',
-    description: 'APIs REST en C#/.NET con arquitectura hexagonal o Clean Architecture, EF Core, PostgreSQL y JWT.',
+    id: 'apis-rest',
+    title: 'APIs REST a la medida',
+    description:
+      'Diseño y construyo la API que tu producto necesita en C# y ASP.NET Core: modelo de datos, endpoints, autenticación JWT con roles y documentación para que tu frontend o tus clientes la consuman.',
     examples: ['Inventario inteligente', 'ToDo hexagonal'],
   },
   {
-    id: 'automatizacion',
-    title: 'Automatización con n8n y bots',
-    description: 'Flujos en n8n y bots conversacionales (Telegram, FastAPI + LangGraph) conectados a tus datos.',
-    examples: ['AgendaBot', 'Inventario inteligente'],
+    id: 'backend-agencias',
+    title: 'Backend para agencias',
+    description:
+      'Si tu agencia hace el diseño y el frontend, yo me encargo del backend: APIs, bases de datos e integraciones, trabajando en tu repositorio con pull requests y documentación.',
+    examples: ['Inventario inteligente', 'AgendaBot'],
   },
   {
-    id: 'inventario-agenda',
-    title: 'Sistemas de inventario y agenda',
-    description: 'Gestión de inventario, ventas y facturación, y agendamiento de citas.',
-    examples: ['Inventario inteligente', 'AgendaBot'],
+    id: 'mantenimiento-dotnet',
+    title: 'Mantenimiento de sistemas .NET',
+    description:
+      'Corrijo errores, agrego funcionalidades y ordeno sistemas existentes en .NET: migraciones con EF Core, PostgreSQL u Oracle y entornos fáciles de levantar con Docker.',
+    examples: ['Gestión de taller mecánico', 'Nexus Odonto'],
   },
 ]
