@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
-import { navLinks, personalInfo } from '@/data/profile'
+import { navLinks } from '@/data/nav'
+import { personalInfo } from '@/data/profile'
 import { useActiveSection } from '@/composables/useActiveSection'
 
 const isOpen = ref(false)

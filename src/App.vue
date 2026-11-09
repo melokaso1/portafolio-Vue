@@ -1,31 +1,38 @@
 <script setup lang="ts">
+import { MotionConfig } from 'motion-v'
 import SiteHeader from './components/SiteHeader.vue'
 import HeroSection from './components/HeroSection.vue'
-import AboutSection from './components/AboutSection.vue'
+import SolveSection from './components/SolveSection.vue'
+import ProjectsSection from './components/ProjectsSection.vue'
 import ServicesSection from './components/ServicesSection.vue'
 import SkillsSection from './components/SkillsSection.vue'
-import ProjectsSection from './components/ProjectsSection.vue'
 import LearningSection from './components/LearningSection.vue'
+import AboutSection from './components/AboutSection.vue'
 import ContactSection from './components/ContactSection.vue'
 import SiteFooter from './components/SiteFooter.vue'
 </script>
 
 <template>
-  <a
-    href="#main"
-    class="sr-only z-[60] rounded-md bg-green px-4 py-2 font-medium text-bg focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
-  >
-    Saltar al contenido
-  </a>
-  <SiteHeader />
-  <main id="main" tabindex="-1">
-    <HeroSection />
-    <AboutSection />
-    <ServicesSection />
-    <SkillsSection />
-    <ProjectsSection />
-    <LearningSection />
-    <ContactSection />
-  </main>
-  <SiteFooter />
+  <!-- reduced-motion="user": motion-v respeta prefers-reduced-motion del sistema. -->
+  <MotionConfig reduced-motion="user">
+    <a
+      href="#main"
+      class="sr-only z-[60] rounded-md bg-green px-4 py-2 font-medium text-bg focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+    >
+      Saltar al contenido
+    </a>
+    <SiteHeader />
+    <!-- Orden de venta: hero > lo que resuelvo > proyectos > servicios > stack > sobre mí > contacto. -->
+    <main id="main" tabindex="-1">
+      <HeroSection />
+      <SolveSection />
+      <ProjectsSection />
+      <ServicesSection />
+      <SkillsSection />
+      <LearningSection />
+      <AboutSection />
+      <ContactSection />
+    </main>
+    <SiteFooter />
+  </MotionConfig>
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SectionHeading from './SectionHeading.vue'
-import { learningItems } from '@/data/profile'
+import { learningItems } from '@/data/stack'
 </script>
 
 <template>

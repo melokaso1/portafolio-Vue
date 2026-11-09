@@ -19,10 +19,23 @@ npm run build       # build de producción en dist/
 npm run preview     # sirve el build
 ```
 
+## Librerías de diseño y animación
+
+- **Vue Bits** (https://vue-bits.dev): los componentes se copian al proyecto en `src/components/vue-bits/` desde su registro (`https://vue-bits.dev/r/<Componente>.json`). Cada archivo indica su origen y los ajustes locales.
+- **motion-v** (Motion para Vue): `MotionConfig reduced-motion="user"` en `App.vue`.
+- **GSAP** (+ ScrollTrigger): se registra en `src/lib/gsap.ts`. `src/components/motion/MotionReveal.vue` envuelve AnimatedContent y no anima con `prefers-reduced-motion`.
+- **PrimeVue** (tema Aura con primario verde): `src/plugins/primevue.ts`. Los componentes se importan uno a uno donde se usan.
+
 ## Editar contenido
 
-- Proyectos: `src/data/projects.ts` (casos de estudio: problema, qué hizo, stack y resultado opcional). Es público y va en el bundle: no poner notas internas ni proyectos ocultos.
-- Perfil, mensaje principal, servicios, skills y aprendizaje: `src/data/profile.ts`.
+Cada sección tiene su archivo de datos en `src/data/`:
+
+- Perfil (nombre, enlaces): `profile.ts`
+- Navegación: `nav.ts`
+- Proyectos: `projects.ts` (casos de estudio: problema, qué hizo, stack y resultado opcional). Es público y va en el bundle: no poner notas internas ni proyectos ocultos.
+- Servicios: `services.ts`
+- Stack y aprendizaje: `stack.ts`
+- Sobre mí: `about.ts`
 
 Reglas del contenido:
 
@@ -32,5 +45,5 @@ Reglas del contenido:
 
 ## Accesibilidad y animaciones
 
-- Animaciones sutiles al hacer scroll (`v-reveal`) que se desactivan con `prefers-reduced-motion`.
+- Animaciones sutiles al hacer scroll (`v-reveal`, GSAP y motion-v) que se desactivan con `prefers-reduced-motion`.
 - Enlace "Skip to content", foco visible, navegación por teclado y contraste AA.
