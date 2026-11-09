@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SectionHeading from './SectionHeading.vue'
-import { aboutParagraphs, profileFacts } from '@/data/profile'
+import { aboutParagraphs, profileFacts } from '@/data/about'
 </script>
 
 <template>

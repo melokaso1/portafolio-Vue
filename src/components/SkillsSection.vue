@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SectionHeading from './SectionHeading.vue'
-import { skillGroups } from '@/data/profile'
+import { skillGroups } from '@/data/stack'
 </script>
 
 <template>

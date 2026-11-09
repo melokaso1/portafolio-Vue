@@ -1,84 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { mount } from '@vue/test-utils'
-import App from '@/App.vue'
-import { vReveal } from '@/directives/reveal'
-import * as projectData from '@/data/projects'
-import { leadership, otherWork, projects } from '@/data/projects'
-
-const BLOCKED_REPOS = [
-  'InteligentInventoryBackend',
-  'InteligentInventoryFrontend',
-  'InteligentInventoryLLMChatBot',
-  'HEALTLAB_FRONTEND',
-  'HEALTLABS_BACKEND',
-  'sonet-automatizacion-demo',
-  'proyecto_luxTime',
-  'Nodux',
-]
-
-const BROKEN_DEMOS = ['nexusodonto.chatcampuslands.com', 'luxtime-luxury.netlify.app']
-
-const mountApp = (attachTo?: HTMLElement) =>
-  mount(App, { attachTo, global: { directives: { reveal: vReveal } } })
-
-describe('datos de proyectos', () => {
-  it('mantiene el orden acordado', () => {
-    expect(projects.map((p) => p.id)).toEqual([
-      'inteligent-inventory',
-      'todo-hexagonal',
-      'agendabot',
-      'liga-betplay',
-      'abc-lms',
-      'dataset-editor',
-    ])
-  })
-
-  it('no incluye notas internas ni proyectos ocultos en el archivo público', () => {
-    const data = JSON.stringify(projectData)
-    expect(data).not.toMatch(/notaInterna|publicar|PENDIENTE/)
-    expect(data).not.toMatch(/healtlab/i)
-  })
-
-  it('no incluye sonet-automatizacion-demo', () => {
-    expect(projects.some((p) => p.id.includes('sonet'))).toBe(false)
-  })
-
-  it('cada proyecto es un caso de estudio y no inventa resultados vacíos', () => {
-    for (const p of projects) {
-      expect(p.problem.length).toBeGreaterThan(0)
-      expect(p.summary.length).toBeGreaterThan(0)
-      expect(p.tech.length).toBeGreaterThan(0)
-      if (p.result !== undefined) expect(p.result.trim().length).toBeGreaterThan(0)
-    }
-  })
-
-  it('usa solo enlaces https, sin repos bloqueados ni demos rotas', () => {
-    const links = [...projects, ...otherWork].flatMap((p) => p.links)
-    for (const link of links) {
-      expect(link.url.startsWith('https://')).toBe(true)
-      for (const blocked of [...BLOCKED_REPOS, ...BROKEN_DEMOS]) expect(link.url).not.toContain(blocked)
-    }
-  })
-
-  it('Nodux no tiene enlaces', () => {
-    expect(JSON.stringify(leadership)).not.toMatch(/https?:\/\//)
-  })
-})
+import { mountApp } from './helpers'
 
 describe('App', () => {
-  it('renderiza las secciones principales', () => {
+  it('renderiza las secciones en el orden de venta', () => {
     const wrapper = mountApp()
-    for (const id of ['hero', 'about', 'services', 'skills', 'projects', 'learning', 'contact']) {
-      expect(wrapper.find(`#${id}`).exists()).toBe(true)
-    }
-    expect(wrapper.find('h1').text()).toContain('Backend .NET que lidera equipos y automatiza procesos')
-    expect(wrapper.find('#hero').text()).toContain('Jhon Alejandro Escobar Lozada')
-  })
-
-  it('muestra los llamados a la acción del hero', () => {
-    const hero = mountApp().find('#hero')
-    expect(hero.find('a[href="#services"]').text()).toContain('Trabaja conmigo')
-    expect(hero.find('a[href*="linkedin.com"]').text()).toContain('LinkedIn')
+    const ids = wrapper.findAll('main > section').map((s) => s.attributes('id'))
+    const expected = ['hero', 'resuelvo', 'projects', 'services', 'skills', 'about', 'contact']
+    expect(ids.filter((id) => expected.includes(id ?? ''))).toEqual(expected)
   })
 
   it('no publica correo ni teléfono en texto plano', () => {
@@ -105,7 +33,6 @@ describe('App', () => {
       expect(html).not.toContain(en)
     }
     expect(html).toContain('Saltar al contenido')
-    expect(html).toContain('Qué hice')
     expect(html).not.toMatch(/SignalR|clinical/i)
   })
 

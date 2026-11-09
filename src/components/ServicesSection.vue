@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SectionHeading from './SectionHeading.vue'
-import { services } from '@/data/profile'
+import { services } from '@/data/services'
 </script>
 
 <template>
