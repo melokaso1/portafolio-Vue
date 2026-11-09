@@ -24,7 +24,7 @@ npm run preview     # sirve el build
 - **Vue Bits** (https://vue-bits.dev): los componentes se copian al proyecto en `src/components/vue-bits/` desde su registro (`https://vue-bits.dev/r/<Componente>.json`). Cada archivo indica su origen y los ajustes locales.
 - **motion-v** (Motion para Vue): `MotionConfig reduced-motion="user"` en `App.vue`.
 - **GSAP** (+ ScrollTrigger): se registra en `src/lib/gsap.ts`. `src/components/motion/MotionReveal.vue` envuelve AnimatedContent y no anima con `prefers-reduced-motion`.
-- **PrimeVue** (tema Aura con primario verde): `src/plugins/primevue.ts`. Los componentes se importan uno a uno donde se usan.
+- **PrimeVue 4** (licencia MIT; la v5 exige licencia comercial de PrimeUI y muestra un aviso "Invalid PrimeUI License"), tema Aura con primario verde: `src/plugins/primevue.ts`. Los componentes se importan uno a uno donde se usan.
 
 ## Editar contenido
 
