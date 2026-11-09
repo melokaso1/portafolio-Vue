@@ -25,9 +25,9 @@ Diseño: Figma "Rediseño v2" (paleta Grafito y ámbar: fondo `#0E0F11`, superfi
 
 - **Vue Bits** (https://vue-bits.dev): los componentes se copian al proyecto en `src/components/vue-bits/` desde su registro (`https://vue-bits.dev/r/<Componente>.json`): Tech Text, Branched Menu, Cubes (una sola instancia fija como fondo de toda la página: `src/components/background/BackgroundCubes.vue`) y Magnet. Cada archivo indica su origen y los ajustes locales.
 - **React Bits** (https://reactbits.dev, licencia MIT + Commons Clause): Circular Carousel no existe en Vue Bits, así que está portado a Vue 3 + TypeScript en `src/components/react-bits/`. El archivo lleva la nota de atribución y la lista de cambios.
-- **motion-v** (Motion para Vue): `MotionConfig reduced-motion="user"` en `App.vue` y el cursor propio (`src/components/cursor/CustomCursor.vue`, hecho con `useMotionValue` + `useSpring`; no usa Motion+).
+- **motion-v** (Motion para Vue): springs de tamaño del cursor propio (`src/components/cursor/CustomCursor.vue`; no usa Motion+). La posición va directa por `translate3d`, sin spring. El cursor y motion-v se cargan en un chunk aparte, solo con puntero fino y sin reduced-motion.
 - **GSAP** (+ ScrollTrigger): se registra en `src/lib/gsap.ts`.
-- **PrimeVue 4** (licencia MIT; la v5 exige licencia comercial de PrimeUI y muestra un aviso "Invalid PrimeUI License"), tema Aura con primario ámbar: `src/plugins/primevue.ts`. El Accordion de servicios va en modo `unstyled` con Tailwind.
+- **PrimeVue 4** (licencia MIT; la v5 exige licencia comercial de PrimeUI y muestra un aviso "Invalid PrimeUI License"), en modo `unstyled` (sin tema Aura): `src/plugins/primevue.ts`. El Accordion de servicios va con Tailwind.
 
 ## Editar contenido
 

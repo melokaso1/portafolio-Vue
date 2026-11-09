@@ -1,125 +1,153 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { motion, useMotionValue, useSpring } from 'motion-v'
+import { magnetOffsets } from '../vue-bits/magnetRegistry'
 
 /**
- * Cursor propio hecho con motion-v (gratis; no usa el Cursor de Motion+).
- * Estados: punto (por defecto), anillo en enlaces, contorno que envuelve botones,
- * círculo "Ver" sobre las tarjetas de proyecto, píldora "Arrastrar" en el carrusel y caret en texto.
- * Solo se activa con puntero fino y hover, y sin prefers-reduced-motion; si no, queda el nativo.
+ * Cursor propio (motion-v, sin Motion+). Estados: punto (por defecto), anillo en enlaces,
+ * contorno que envuelve botones, círculo "Ver" sobre las tarjetas de proyecto, píldora
+ * "Arrastrar" en el carrusel y caret en texto. Solo se monta con puntero fino y sin
+ * prefers-reduced-motion (lo decide App.vue); si no, queda el cursor nativo.
+ *
+ * Rendimiento:
+ * - La posición se escribe directo en `transform: translate3d` dentro del mismo evento: sin
+ *   spring, sin estado reactivo y sin re-render de Vue por movimiento.
+ * - El estado se calcula en pointerover (cuando cambia el elemento), no en cada movimiento. Ahí
+ *   se mide una sola vez el botón (rect y border-radius); nada de getBoundingClientRect ni
+ *   getComputedStyle por movimiento.
+ * - En un botón con Magnet, el contorno sigue el desplazamiento publicado por el Magnet en
+ *   magnetRegistry (un rAF solo mientras dura el bloqueo).
+ * - Solo el tamaño del contorno usa springs (cambian al cambiar de estado, no al mover).
  */
 type CursorState = 'default' | 'link' | 'button' | 'card' | 'drag' | 'text'
 
-const enabled = ref(false)
+const root = ref<HTMLElement | null>(null)
 const visible = ref(false)
 const state = ref<CursorState>('default')
 const pressed = ref(false)
 
-const x = useMotionValue(-100)
-const y = useMotionValue(-100)
 const w = useMotionValue(12)
 const h = useMotionValue(12)
 const r = useMotionValue(999)
-const fast = { stiffness: 900, damping: 60, mass: 0.4 }
-const soft = { stiffness: 420, damping: 38, mass: 0.6 }
-const sx = useSpring(x, fast)
-const sy = useSpring(y, fast)
-const sw = useSpring(w, soft)
-const sh = useSpring(h, soft)
-const sr = useSpring(r, soft)
+const size = { stiffness: 700, damping: 50, mass: 0.5 }
+const sw = useSpring(w, size)
+const sh = useSpring(h, size)
+const sr = useSpring(r, size)
 
 const TEXT = 'p, h1, h2, h3, h4, li, blockquote, dd, [data-cursor="text"]'
 const BUTTON = '.btn, [data-cursor="button"]'
 const LINK = 'a, button, [role="button"], summary, label, select'
+/** Separación entre el botón y su contorno, en px. */
+const PAD = 4
 
+const place = (px: number, py: number) => {
+  if (root.value) root.value.style.transform = `translate3d(${px}px, ${py}px, 0)`
+}
+
+// Bloqueo sobre un botón: centro base (sin el desplazamiento del Magnet) medido una vez.
 let locked: HTMLElement | null = null
+let magnet: Element | null = null
+let baseX = 0
+let baseY = 0
+let lockRaf = 0
 
-const update = (e: PointerEvent) => {
-  if (e.pointerType !== 'mouse') return
-  visible.value = true
-  const target = e.target instanceof Element ? e.target : null
-  const marked = target?.closest<HTMLElement>('[data-cursor]')
-  const kind = marked?.dataset.cursor
-  const button = target?.closest<HTMLElement>(BUTTON)
-  locked = null
-
-  if (kind === 'card') {
-    state.value = 'card'
-    w.set(64)
-    h.set(64)
-    r.set(999)
-  } else if (kind === 'drag' && !button) {
-    state.value = 'drag'
-    w.set(132)
-    h.set(36)
-    r.set(999)
-  } else if (button) {
-    state.value = 'button'
-    locked = button
-    const rect = button.getBoundingClientRect()
-    w.set(rect.width + 12)
-    h.set(rect.height + 12)
-    r.set(parseFloat(getComputedStyle(button).borderTopLeftRadius) + 6 || 12)
-  } else if (target?.closest(LINK)) {
-    state.value = 'link'
-    w.set(40)
-    h.set(40)
-    r.set(999)
-  } else if (target?.closest(TEXT) && target.textContent?.trim()) {
-    state.value = 'text'
-    const style = getComputedStyle(target)
-    const lh = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.3 || 20
-    w.set(2)
-    h.set(Math.min(lh, 72))
-    r.set(1)
-  } else {
-    state.value = 'default'
-    w.set(12)
-    h.set(12)
-    r.set(999)
-  }
-
-  if (locked) {
-    // El contorno se centra en el botón y se mueve apenas con el puntero.
-    const rect = locked.getBoundingClientRect()
-    const cx = rect.left + rect.width / 2
-    const cy = rect.top + rect.height / 2
-    x.set(cx + (e.clientX - cx) * 0.08)
-    y.set(cy + (e.clientY - cy) * 0.08)
-  } else {
-    x.set(e.clientX)
-    y.set(e.clientY)
+const offsetOf = () => (magnet && magnetOffsets.get(magnet)) || { x: 0, y: 0 }
+const measureLock = () => {
+  if (!locked) return
+  const rect = locked.getBoundingClientRect()
+  const o = offsetOf()
+  baseX = rect.left + rect.width / 2 - o.x
+  baseY = rect.top + rect.height / 2 - o.y
+  w.set(rect.width + PAD * 2)
+  h.set(rect.height + PAD * 2)
+  r.set((parseFloat(getComputedStyle(locked).borderTopLeftRadius) || 8) + PAD)
+}
+const followLock = () => {
+  if (!locked) return (lockRaf = 0)
+  const o = offsetOf()
+  place(baseX + o.x, baseY + o.y)
+  lockRaf = requestAnimationFrame(followLock)
+}
+const lock = (el: HTMLElement | null) => {
+  if (el === locked) return
+  locked = el
+  magnet = el?.closest('[data-magnet]') ?? null
+  if (el) {
+    measureLock()
+    if (!lockRaf) lockRaf = requestAnimationFrame(followLock)
   }
 }
 
-const hide = () => (visible.value = false)
+const shape = (s: CursorState, width: number, height: number, radius: number) => {
+  state.value = s
+  w.set(width)
+  h.set(height)
+  r.set(radius)
+}
+
+const classify = (target: Element | null) => {
+  const marked = target?.closest<HTMLElement>('[data-cursor]')
+  const kind = marked?.dataset.cursor
+  const button = target?.closest<HTMLElement>(BUTTON) ?? null
+
+  if (kind === 'card') {
+    lock(null)
+    shape('card', 64, 64, 999)
+  } else if (kind === 'drag' && !button) {
+    lock(null)
+    shape('drag', 132, 36, 999)
+  } else if (button) {
+    state.value = 'button'
+    lock(button)
+  } else if (target?.closest(LINK)) {
+    lock(null)
+    shape('link', 40, 40, 999)
+  } else if (target?.closest(TEXT) && target.textContent?.trim()) {
+    lock(null)
+    const style = getComputedStyle(target)
+    const lh = parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.3 || 20
+    shape('text', 2, Math.min(lh, 72), 1)
+  } else {
+    lock(null)
+    shape('default', 12, 12, 999)
+  }
+}
+
+const onMove = (e: PointerEvent) => {
+  if (e.pointerType !== 'mouse') return
+  if (!visible.value) visible.value = true
+  if (!locked) place(e.clientX, e.clientY)
+}
+const onOver = (e: PointerEvent) => {
+  if (e.pointerType !== 'mouse') return
+  classify(e.target instanceof Element ? e.target : null)
+  if (!locked) place(e.clientX, e.clientY)
+}
+const onScroll = () => locked && measureLock()
+const hide = () => {
+  visible.value = false
+  lock(null)
+}
 const down = () => (pressed.value = true)
 const up = () => (pressed.value = false)
 
-let mqls: MediaQueryList[] = []
-const evaluate = () => {
-  const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  enabled.value = fine && !reduce
-  document.documentElement.classList.toggle('has-custom-cursor', enabled.value)
-}
-
 onMounted(() => {
-  if (typeof window.matchMedia !== 'function') return
-  mqls = [window.matchMedia('(hover: hover) and (pointer: fine)'), window.matchMedia('(prefers-reduced-motion: reduce)')]
-  mqls.forEach((m) => m.addEventListener?.('change', evaluate))
-  evaluate()
-  window.addEventListener('pointermove', update, { passive: true })
+  document.documentElement.classList.add('has-custom-cursor')
+  window.addEventListener('pointermove', onMove, { passive: true })
+  window.addEventListener('pointerover', onOver, { passive: true })
   window.addEventListener('pointerdown', down, { passive: true })
   window.addEventListener('pointerup', up, { passive: true })
+  window.addEventListener('scroll', onScroll, { passive: true })
   document.documentElement.addEventListener('pointerleave', hide)
 })
 
 onBeforeUnmount(() => {
-  mqls.forEach((m) => m.removeEventListener?.('change', evaluate))
-  window.removeEventListener('pointermove', update)
+  cancelAnimationFrame(lockRaf)
+  window.removeEventListener('pointermove', onMove)
+  window.removeEventListener('pointerover', onOver)
   window.removeEventListener('pointerdown', down)
   window.removeEventListener('pointerup', up)
+  window.removeEventListener('scroll', onScroll)
   document.documentElement.removeEventListener('pointerleave', hide)
   document.documentElement.classList.remove('has-custom-cursor')
 })
@@ -132,7 +160,6 @@ const look = computed(() => {
     case 'button':
       return 'border border-ink bg-transparent'
     case 'card':
-      return 'bg-ink text-bg'
     case 'drag':
       return 'bg-ink text-bg'
     case 'text':
@@ -144,18 +171,19 @@ const look = computed(() => {
 </script>
 
 <template>
-  <motion.div
-    v-if="enabled"
+  <div
+    ref="root"
     aria-hidden="true"
-    class="pointer-events-none fixed left-0 top-0 z-[9999]"
-    :style="{ x: sx, y: sy, opacity: visible ? 1 : 0 }"
+    class="pointer-events-none fixed left-0 top-0 z-[9999] transition-opacity duration-150"
+    :class="visible ? 'opacity-100' : 'opacity-0'"
+    style="transform: translate3d(-100px, -100px, 0); will-change: transform"
   >
     <motion.div
-      class="flex -translate-x-1/2 -translate-y-1/2 items-center justify-center overflow-hidden whitespace-nowrap font-mono text-[12px] font-medium transition-[background-color,border-color,opacity,scale] duration-150"
+      class="flex -translate-x-1/2 -translate-y-1/2 items-center justify-center overflow-hidden whitespace-nowrap font-mono text-[12px] font-medium transition-[background-color,border-color,scale] duration-150"
       :class="[look, pressed ? 'scale-90' : '']"
       :style="{ width: sw, height: sh, borderRadius: sr }"
     >
       <span v-if="label">{{ label }}</span>
     </motion.div>
-  </motion.div>
+  </div>
 </template>
