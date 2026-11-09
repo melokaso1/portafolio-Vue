@@ -9,6 +9,12 @@
     rAF y el rectángulo cacheado (sin getBoundingClientRect en cada movimiento).
   - Solo se animan los cubos cerca del puntero (y los que vuelven a 0), no toda la retícula.
   - Se pausa con la pestaña oculta.
+  - Ripple optimizado: en vez de animar backgroundColor de las 6 caras de TODOS los cubos (miles
+    de tweens, recálculos de estilo y repintados por clic), se anima solo la opacity de una capa
+    de color en la cara frontal, y solo en los cubos dentro de `rippleRadius`; los
+    clics repetidos reemplazan los tweens anteriores (sin acumular), hay un throttle mínimo
+    entre clics y con prefers-reduced-motion no hay ripple.
+  - `backFace=false` omite la cara trasera, que nunca se ve con inclinaciones < 90° (1/6 menos capas 3D).
 -->
 <template>
   <div class="relative w-full" :class="fill ? 'h-full' : 'aspect-square'" :style="wrapperStyle">
@@ -72,9 +78,12 @@
               boxShadow: 'var(--cube-face-shadow)',
               transform: 'rotateY(-90deg) translateX(50%) rotateY(90deg)'
             }"
-          />
+          >
+            <span v-if="rippleOnClick" class="cube-glow absolute inset-0 pointer-events-none" :style="{ background: rippleColor, opacity: 0 }" />
+          </div>
 
           <div
+            v-if="backFace"
             class="absolute inset-0 flex justify-center items-center cube-face"
             :style="{
               background: 'var(--cube-face-bg)',
@@ -118,6 +127,9 @@ interface Props {
   rippleOnClick?: boolean;
   rippleColor?: string;
   rippleSpeed?: number;
+  rippleRadius?: number;
+  rippleThrottle?: number;
+  backFace?: boolean;
   columns?: number;
   rows?: number;
   fill?: boolean;
@@ -137,6 +149,9 @@ const props = withDefaults(defineProps<Props>(), {
   rippleOnClick: true,
   rippleColor: '#fff',
   rippleSpeed: 2,
+  rippleRadius: Infinity,
+  rippleThrottle: 0,
+  backFace: true,
   columns: undefined,
   rows: undefined,
   fill: false,
@@ -150,6 +165,13 @@ const userActiveRef = ref(false);
 const simPosRef = ref<{ x: number; y: number }>({ x: 0, y: 0 });
 const simTargetRef = ref<{ x: number; y: number }>({ x: 0, y: 0 });
 const simRAFRef = ref<number | null>(null);
+let lastRipple = -Infinity;
+const ripples = new WeakMap<HTMLElement, gsap.core.Timeline>();
+const glows = new WeakMap<HTMLElement, HTMLElement | null>();
+const glowOf = (cube: HTMLElement) => {
+  if (!glows.has(cube)) glows.set(cube, cube.querySelector<HTMLElement>('.cube-glow'));
+  return glows.get(cube) ?? null;
+};
 
 const colGap = computed(() => {
   return typeof props.cellGap === 'number'
@@ -225,12 +247,12 @@ const tiltAt = (rowCenter: number, colCenter: number) => {
       if (dist > props.radius) continue;
       const angle = (1 - dist / props.radius) * props.maxAngle;
       next.add(cube);
-      gsap.to(cube, { duration: enterDur.value, ease: props.easing, overwrite: true, rotateX: -angle, rotateY: angle });
+      gsap.to(cube, { duration: enterDur.value, ease: props.easing, overwrite: 'auto', rotateX: -angle, rotateY: angle });
     }
   }
   tilted.forEach(cube => {
     if (next.has(cube)) return;
-    gsap.to(cube, { duration: leaveDur.value, ease: 'power3.out', overwrite: true, rotateX: 0, rotateY: 0 });
+    gsap.to(cube, { duration: leaveDur.value, ease: 'power3.out', overwrite: 'auto', rotateX: 0, rotateY: 0 });
   });
   tilted.clear();
   next.forEach(cube => tilted.add(cube));
@@ -281,7 +303,11 @@ const resetAll = () => {
 };
 
 const onClick = (e: MouseEvent) => {
-  if (!props.rippleOnClick || !sceneRef.value) return;
+  if (!props.rippleOnClick || !sceneRef.value || document.hidden) return;
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+  const now = performance.now();
+  if (now - lastRipple < props.rippleThrottle) return;
+  lastRipple = now;
   if (props.listenWindow && (e.target as Element | null)?.closest?.('a, button, input, textarea, select, [role="button"], [data-cursor]')) return;
 
   measure();
@@ -299,36 +325,23 @@ const onClick = (e: MouseEvent) => {
   const animDuration = baseAnimDur / props.rippleSpeed;
   const holdTime = baseHold / props.rippleSpeed;
 
-  const rings: Record<number, HTMLDivElement[]> = {};
+  const maxRing = props.rippleRadius;
   cubesList().forEach(cube => {
     const r = +cube.dataset.row!;
     const c = +cube.dataset.col!;
-    const dist = Math.hypot(r - rowHit, c - colHit);
-    const ring = Math.round(dist);
-    if (!rings[ring]) rings[ring] = [];
-    rings[ring].push(cube);
+    const ring = Math.round(Math.hypot(r - rowHit, c - colHit));
+    if (ring > maxRing) return;
+    const delay = ring * spreadDelay;
+    // Una sola capa por cubo (la cara frontal) y solo opacity. Un clic nuevo corta la onda
+    // anterior de ese cubo (no se acumulan tweens).
+    const glow = glowOf(cube);
+    if (!glow) return;
+    ripples.get(glow)?.kill();
+    const tl = gsap.timeline({ onComplete: () => ripples.delete(glow) });
+    tl.to(glow, { opacity: 1, duration: animDuration, delay, ease: 'power3.out' });
+    tl.to(glow, { opacity: 0, duration: animDuration, delay: holdTime, ease: 'power3.out' });
+    ripples.set(glow, tl);
   });
-
-  Object.keys(rings)
-    .map(Number)
-    .sort((a, b) => a - b)
-    .forEach(ring => {
-      const delay = ring * spreadDelay;
-      const faces = rings[ring].flatMap(cube => Array.from(cube.querySelectorAll<HTMLElement>('.cube-face')));
-
-      gsap.to(faces, {
-        backgroundColor: props.rippleColor,
-        duration: animDuration,
-        delay,
-        ease: 'power3.out'
-      });
-      gsap.to(faces, {
-        backgroundColor: props.faceColor,
-        duration: animDuration,
-        delay: delay + animDuration + holdTime,
-        ease: 'power3.out'
-      });
-    });
 };
 
 const startAutoAnimation = () => {
