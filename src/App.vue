@@ -11,7 +11,7 @@ import SiteFooter from './components/SiteFooter.vue'
 import BackgroundCubes from './components/background/BackgroundCubes.vue'
 import { useFinePointer } from './composables/useFinePointer'
 
-/** El cursor (y motion-v) se carga aparte y solo con puntero fino y sin reduced-motion. */
+/** El cursor se carga aparte y solo con puntero fino y sin reduced-motion. */
 const CustomCursor = defineAsyncComponent(() => import('./components/cursor/CustomCursor.vue'))
 const fine = useFinePointer()
 </script>

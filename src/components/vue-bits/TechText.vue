@@ -3,9 +3,11 @@
   Copiado desde el registro oficial: https://vue-bits.dev/r/TechText.json
   Ajustes locales: prop `align` ('left' | 'center') para alinear el texto a la izquierda como en el diseño (la versión React la trae)
   y prop `fixedSize` para que varias líneas compartan el mismo tamaño de letra.
-  Rendimiento: el rect del contenedor se cachea (pointerenter, scroll, resize), no se mide en cada pointermove.
+  Rendimiento: el mouse llega del seguimiento compartido (usePointer: un listener y un rAF para
+  todos los efectos) y el rect del contenedor se cachea (scroll, resize), no se mide por evento.
 -->
 <script setup lang="ts">
+import { subscribePointer } from '@/composables/usePointer';
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 type Box = { x1: number; y1: number; x2: number; y2: number };
@@ -689,7 +691,19 @@ const mountScene = () => {
     pointer.x = e.clientX - rect.left;
     pointer.y = e.clientY - rect.top;
   };
+  // Mouse: seguimiento compartido (usePointer); el contenedor solo escucha táctil/lápiz.
+  const offPointer = subscribePointer((p) => {
+    const rect = (box ??= container.getBoundingClientRect());
+    const inside = p.inside && p.x >= rect.left && p.x <= rect.right && p.y >= rect.top && p.y <= rect.bottom;
+    if (!inside && !pointer.inside) return;
+    if (!inside && dragging >= 0) return;
+    pointer.x = p.x - rect.left;
+    pointer.y = p.y - rect.top;
+    pointer.inside = inside;
+    wake();
+  });
   const onMove = (e: PointerEvent) => {
+    if (e.pointerType === 'mouse') return;
     locate(e);
     pointer.inside = true;
     wake();
@@ -726,17 +740,13 @@ const mountScene = () => {
   };
 
   container.addEventListener('pointermove', onMove, { passive: true });
-  const onEnter = (e: PointerEvent) => {
-    box = null;
-    onMove(e);
-  };
-  container.addEventListener('pointerenter', onEnter, { passive: true });
   window.addEventListener('scroll', invalidateBox, { passive: true });
   window.addEventListener('resize', invalidateBox, { passive: true });
   container.addEventListener('pointerdown', onDown, { passive: true });
   container.addEventListener('pointerup', onUp, { passive: true });
   container.addEventListener('pointercancel', onUp, { passive: true });
-  container.addEventListener('pointerleave', onLeave, { passive: true });
+  const onTouchLeave = (e: PointerEvent) => e.pointerType !== 'mouse' && onLeave();
+  container.addEventListener('pointerleave', onTouchLeave, { passive: true });
 
   const resizeObserver = new ResizeObserver(resize);
   resizeObserver.observe(container);
@@ -756,13 +766,13 @@ const mountScene = () => {
     resizeObserver.disconnect();
     intersectionObserver.disconnect();
     container.removeEventListener('pointermove', onMove);
-    container.removeEventListener('pointerenter', onEnter);
+    offPointer();
     window.removeEventListener('scroll', invalidateBox);
     window.removeEventListener('resize', invalidateBox);
     container.removeEventListener('pointerdown', onDown);
     container.removeEventListener('pointerup', onUp);
     container.removeEventListener('pointercancel', onUp);
-    container.removeEventListener('pointerleave', onLeave);
+    container.removeEventListener('pointerleave', onTouchLeave);
   };
 };
 
