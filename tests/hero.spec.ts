@@ -36,3 +36,15 @@ describe('Hero', () => {
     expect(hero.find('a[href*="github.com/melokaso1"]').exists()).toBe(true)
   })
 })
+
+describe('Wordmark del hero', () => {
+  it('sin puntero fino o con reduced-motion se ve como texto estático y el nombre completo es accesible', () => {
+    const hero = mountApp().find('#hero')
+    // jsdom: matchMedia no coincide, así que no se monta el canvas de Tech Text.
+    expect(hero.find('canvas').exists()).toBe(false)
+    const wordmark = hero.find('[aria-hidden="true"] p')
+    expect(wordmark.text()).toContain('Alejandro')
+    expect(wordmark.text()).toContain('Escobar')
+    expect(hero.find('.sr-only').text()).toBe('Jhon Alejandro Escobar Lozada')
+  })
+})
