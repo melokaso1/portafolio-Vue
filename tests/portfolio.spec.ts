@@ -95,3 +95,12 @@ describe('Tarjetas de proyecto', () => {
     expect(projects.find('img[src^="data:image/svg"]').exists()).toBe(false)
   })
 })
+
+describe('Contacto: CTA con Magnet', () => {
+  it('el enlace de GitHub queda separado y por encima del botón con Magnet', () => {
+    const contact = mountApp().find('#contact')
+    expect(contact.find('[data-magnet] .btn-primary').exists()).toBe(true)
+    const github = contact.find('a.link[href*="github.com"]')
+    expect(github.classes()).toEqual(expect.arrayContaining(['relative', 'z-10', 'sm:ml-7']))
+  })
+})
