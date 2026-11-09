@@ -1,77 +1,105 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import Button from 'primevue/button'
-import SplitText from '@/components/vue-bits/SplitText.vue'
-import ShinyText from '@/components/vue-bits/ShinyText.vue'
-import Magnet from '@/components/vue-bits/Magnet.vue'
+import { defineAsyncComponent } from 'vue'
+import PcIllustration from './pc/PcIllustration.vue'
 import { hero } from '@/data/hero'
 import { personalInfo } from '@/data/profile'
-import { useReducedMotion } from '@/composables/useReducedMotion'
+import { useFinePointer } from '@/composables/useFinePointer'
 
-const reduced = useReducedMotion()
-const mounted = ref(false)
-onMounted(() => {
-  mounted.value = true
-})
+const Cubes = defineAsyncComponent(() => import('./vue-bits/Cubes.vue'))
+const TechText = defineAsyncComponent(() => import('./vue-bits/TechText.vue'))
+const fine = useFinePointer()
+
+const [titleStart, titleEnd] = hero.title.split('.NET')
+const wordmark = ['Alejandro', 'Escobar']
 </script>
 
 <template>
-  <section id="hero" class="relative flex min-h-[min(92svh,52rem)] items-center overflow-hidden" aria-labelledby="hero-title">
-    <div class="hero-glow pointer-events-none absolute inset-0" aria-hidden="true" />
+  <section id="hero" class="relative overflow-hidden pb-16 pt-[92px] lg:min-h-[640px] lg:pb-12 lg:pt-[120px]" aria-labelledby="hero-title">
+    <!-- Fondo: Cubes (Vue Bits) con puntero fino; si no, una retícula estática punteada. -->
+    <div class="hero-fade pointer-events-auto absolute inset-0 -z-0" aria-hidden="true">
+      <div v-if="fine" class="absolute inset-x-0 top-0">
+        <Cubes
+          :grid-size="20"
+          :max-angle="40"
+          :radius="3"
+          :cell-gap="14"
+          border-style="1px dashed #2A2D32"
+          face-color="#0E0F11"
+          :auto-animate="false"
+          :ripple-on-click="false"
+        />
+      </div>
+      <div v-else class="cube-grid absolute inset-0" />
+    </div>
 
-    <div
-      class="section relative w-full transition-all duration-700 ease-out"
-      :class="mounted ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'"
-    >
-      <p class="inline-flex items-center gap-2 rounded-full border border-green/30 bg-green/5 px-3 py-1 text-xs font-medium sm:text-sm">
-        <span class="inline-block h-1.5 w-1.5 rounded-full bg-green" aria-hidden="true" />
-        <ShinyText :text="hero.badge" :disabled="reduced" :speed="3" color="#86efac" shine-color="#ecfdf5" />
-      </p>
+    <div class="shell relative grid items-start gap-10 lg:grid-cols-[minmax(0,580px)_minmax(0,460px)]">
+      <div class="pointer-events-none relative z-10 [&_a]:pointer-events-auto">
+        <p class="inline-flex items-center gap-2 rounded-full border border-line bg-bg px-3 py-1.5 text-[13px] text-muted">
+          <span class="h-1.5 w-1.5 rounded-full bg-ink" aria-hidden="true" />
+          {{ hero.badge }}
+        </p>
 
-      <p class="mt-6 text-base font-medium text-text/80 md:text-lg">{{ personalInfo.name }}</p>
+        <p class="sr-only">{{ personalInfo.name }}</p>
+        <div class="pointer-events-auto mt-5 lg:mt-6" aria-hidden="true">
+          <template v-if="fine">
+            <div v-for="word in wordmark" :key="word" class="h-[90px] lg:h-[116px]">
+              <TechText
+                :text="word"
+                font-family="Inter Tight, Inter, sans-serif"
+                :font-weight="600"
+                :font-size="104"
+                :letter-spacing="-0.03"
+                color="#ECEAE6"
+                accent-color="#E8A33D"
+                :reach="160"
+                :specks="0"
+                :selection="false"
+                :labels="false"
+                :draggable="false"
+                :sweep="false"
+                reveal="area"
+                align="left"
+              />
+            </div>
+          </template>
+          <p v-else class="font-display text-[clamp(56px,17vw,104px)] font-semibold leading-[1.02] tracking-[-0.03em] text-ink">
+            <span v-for="word in wordmark" :key="word" class="block">{{ word }}</span>
+          </p>
+        </div>
 
-      <h1
-        v-if="reduced"
-        id="hero-title"
-        class="mt-2 max-w-4xl text-3xl font-bold leading-tight tracking-tight text-text sm:text-5xl md:text-6xl"
-      >
-        {{ hero.title }}
-      </h1>
-      <SplitText
-        v-else
-        id="hero-title"
-        tag="h1"
-        :text="hero.title"
-        split-type="words"
-        text-align="left"
-        :delay="40"
-        :duration="0.8"
-        :threshold="0"
-        root-margin="0px"
-        :from="{ opacity: 0, y: 24 }"
-        class-name="mt-2 block max-w-4xl text-3xl font-bold leading-tight tracking-tight text-text sm:text-5xl md:text-6xl"
-      />
+        <h1 id="hero-title" class="mt-3 max-w-[760px] font-display text-[22px] font-medium leading-[1.15] tracking-[-0.015em] text-ink lg:mt-3.5 lg:text-[30px]">
+          {{ titleStart }}<span class="text-accent">.NET</span>{{ titleEnd }}
+        </h1>
+        <p class="mt-3.5 text-[17px] text-muted">{{ hero.subtitle }}</p>
 
-      <p class="mt-6 max-w-2xl text-base leading-relaxed text-muted md:text-lg">
-        {{ hero.subtitle }}
-      </p>
-
-      <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-        <Magnet :disabled="reduced" :padding="60" :magnet-strength="6" wrapper-class-name="w-full sm:w-auto" inner-class-name="w-full">
-          <Button as="a" :href="hero.primaryCta.href" :label="hero.primaryCta.label" class="btn btn-primary w-full justify-center" />
-        </Magnet>
-
-        <a :href="personalInfo.linkedin" target="_blank" rel="noopener noreferrer" class="btn btn-ghost justify-center">
-          {{ hero.linkedinCta.label }} <span aria-hidden="true">↗</span><span class="sr-only"> (se abre en una pestaña nueva)</span>
-        </a>
+        <div class="mt-6 flex flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-3 lg:mt-8">
+          <a :href="hero.primaryCta.href" class="btn btn-primary justify-center">{{ hero.primaryCta.label }}</a>
+          <a :href="personalInfo.linkedin" target="_blank" rel="noopener noreferrer" class="btn btn-ghost justify-center">
+            {{ hero.linkedinCta.label }} <span aria-hidden="true">↗</span>
+          </a>
+          <a :href="personalInfo.github" target="_blank" rel="noopener noreferrer" class="link self-center px-2 text-sm sm:self-auto">
+            GitHub <span aria-hidden="true">↗</span>
+          </a>
+        </div>
       </div>
 
-      <p class="mt-8 text-sm text-muted">
-        ¿Quieres ver mi código?
-        <a :href="personalInfo.github" target="_blank" rel="noopener noreferrer" class="link-inline">
-          GitHub <span aria-hidden="true">↗</span><span class="sr-only"> (se abre en una pestaña nueva)</span>
-        </a>
-      </p>
+      <div v-reveal class="pointer-events-none relative z-10 mx-auto w-full max-w-[300px] lg:mt-[-20px] lg:max-w-none">
+        <PcIllustration :stage="0" />
+      </div>
     </div>
   </section>
 </template>
+
+<style scoped>
+.hero-fade {
+  -webkit-mask-image: linear-gradient(to bottom, #000 35%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 35%, transparent 100%);
+}
+.cube-grid {
+  background-image:
+    linear-gradient(to right, rgb(var(--line)) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(var(--line)) 1px, transparent 1px);
+  background-size: 57px 57px;
+  opacity: 0.55;
+}
+</style>

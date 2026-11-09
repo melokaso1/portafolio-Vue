@@ -1,44 +1,64 @@
 <script setup lang="ts">
-import SectionHeading from './SectionHeading.vue'
-import SpotlightCard from '@/components/vue-bits/SpotlightCard.vue'
-import MotionReveal from '@/components/motion/MotionReveal.vue'
+import TechHeading from './TechHeading.vue'
+import PcIllustration from './pc/PcIllustration.vue'
 import { solveItems } from '@/data/solve'
 
-const icons: Record<string, string> = {
-  apis: 'M4 6h16M4 12h16M4 18h10',
-  integraciones: 'M8 7h8m-8 10h8M5 12h14M12 5v14',
-  automatizaciones: 'M13 3L4 14h7l-1 7 9-11h-7l1-7z',
+/** Íconos de trazo fino (los mismos del Figma v2). */
+const icons: Record<string, string[]> = {
+  apis: [
+    'M16 8 Q10 8 10 14 L10 19 Q10 22 6 22 Q10 22 10 25 L10 30 Q10 36 16 36',
+    'M28 8 Q34 8 34 14 L34 19 Q34 22 38 22 Q34 22 34 25 L34 30 Q34 36 28 36',
+  ],
+  integraciones: ['M4 9 a3 3 0 0 1 3 -3 h8 a3 3 0 0 1 3 3 v8 a3 3 0 0 1 -3 3 h-8 a3 3 0 0 1 -3 -3 z', 'M26 27 a3 3 0 0 1 3 -3 h8 a3 3 0 0 1 3 3 v8 a3 3 0 0 1 -3 3 h-8 a3 3 0 0 1 -3 -3 z', 'M18 13 L26 13 Q33 13 33 20 L33 24'],
+  automatizaciones: ['M34 16 A13 13 0 0 0 10 18', 'M10 28 A13 13 0 0 0 34 26', 'M34 9 L34 16 L27 16', 'M10 35 L10 28 L17 28'],
 }
 </script>
 
 <template>
   <section id="resuelvo" class="section" aria-labelledby="resuelvo-title">
-    <SectionHeading
-      id="resuelvo"
-      command="cat ./lo-que-resuelvo.md"
-      title="Lo que resuelvo"
-      description="Problemas concretos de backend que puedo quitarte de encima, como freelance o dentro de tu equipo."
-    />
-
-    <ul class="grid gap-5 md:grid-cols-3">
-      <li v-for="(item, i) in solveItems" :key="item.id" class="h-full">
-        <MotionReveal :delay="i * 0.1" class-name="h-full">
-          <SpotlightCard class-name="card h-full !rounded-xl !p-6" spotlight-color="rgba(74, 222, 128, 0.18)">
-            <div class="relative">
-              <span class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-green/30 bg-green/10 text-green" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path :d="icons[item.id]" />
-                </svg>
-              </span>
-              <h3 class="mt-4 text-lg font-semibold text-text">{{ item.title }}</h3>
-              <p class="mt-3 leading-relaxed text-text/85">{{ item.description }}</p>
-              <p v-if="item.proof.length" class="mt-4 font-mono text-xs text-muted">
-                Lo he hecho en: {{ item.proof.join(' · ') }}
-              </p>
+    <div class="shell grid items-start gap-10 lg:grid-cols-[minmax(0,580px)_minmax(0,460px)]">
+      <div>
+        <div class="mb-3 flex items-end justify-between gap-4 lg:mb-10">
+          <div class="min-w-0 flex-1">
+            <p class="idx" aria-hidden="true">01</p>
+            <TechHeading id="resuelvo-title" class="mt-2.5" text="Lo que resuelvo" />
+          </div>
+          <div v-reveal class="w-[120px] shrink-0 lg:hidden">
+            <PcIllustration :stage="1" :animate="false" />
+          </div>
+        </div>
+        <ul>
+          <li
+            v-for="(item, i) in solveItems"
+            :key="item.id"
+            v-reveal="i * 90"
+            class="flex items-center gap-5 border-t border-line py-4 last:border-b lg:py-[22px]"
+          >
+            <svg class="hidden h-11 w-11 shrink-0 text-muted sm:block" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+              <path
+                v-for="(d, k) in icons[item.id]"
+                :key="k"
+                :d="d"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                :stroke-dasharray="item.id === 'integraciones' && k === 2 ? '3 3' : undefined"
+              />
+            </svg>
+            <div>
+              <h3 class="font-display text-[19px] font-semibold tracking-[-0.01em] text-ink lg:text-2xl">{{ item.title }}</h3>
+              <p class="mt-1.5 text-sm text-muted lg:mt-2">{{ item.proof.join(' · ') }}</p>
             </div>
-          </SpotlightCard>
-        </MotionReveal>
-      </li>
-    </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="pc-col">
+        <div class="pc-sticky">
+          <PcIllustration :stage="1" />
+          <p class="pcl" aria-hidden="true">01 · placa base + CPU</p>
+        </div>
+      </div>
+    </div>
   </section>
 </template>
