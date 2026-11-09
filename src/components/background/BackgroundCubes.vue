@@ -52,6 +52,9 @@ onBeforeUnmount(() => {
         ripple-on-click
         ripple-color="rgba(232, 163, 61, 0.22)"
         :ripple-speed="2"
+        :ripple-radius="5"
+        :ripple-throttle="180"
+        :back-face="false"
       />
     </div>
     <div v-else class="static-grid absolute inset-0" />
