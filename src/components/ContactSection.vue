@@ -39,12 +39,12 @@ const [before, after] = contact.closing.split('Hablemos')
               {{ before }}<span class="text-accent">Hablemos</span>{{ after }}
             </h2>
             <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center lg:mt-8">
-              <Magnet :padding="60" :magnet-strength="4" :disabled="!fine" wrapper-class-name="pointer-events-auto">
+              <Magnet :padding="40" :magnet-strength="6" :max-offset="6" :disabled="!fine" wrapper-class-name="pointer-events-auto">
                 <a :href="contact.primary.url" target="_blank" rel="noopener noreferrer" class="btn btn-primary w-full justify-center sm:w-auto">
                   {{ contact.primary.label }} <span aria-hidden="true">↗</span>
                 </a>
               </Magnet>
-              <a :href="personalInfo.github" target="_blank" rel="noopener noreferrer" class="link self-center sm:ml-3">
+              <a :href="personalInfo.github" target="_blank" rel="noopener noreferrer" class="link relative z-10 self-center sm:ml-7">
                 GitHub <span aria-hidden="true">↗</span>
               </a>
             </div>

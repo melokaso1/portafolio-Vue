@@ -3,6 +3,7 @@
   Copiado desde el registro oficial: https://vue-bits.dev/r/TechText.json
   Ajustes locales: prop `align` ('left' | 'center') para alinear el texto a la izquierda como en el diseño (la versión React la trae)
   y prop `fixedSize` para que varias líneas compartan el mismo tamaño de letra.
+  Rendimiento: el rect del contenedor se cachea (pointerenter, scroll, resize), no se mide en cada pointermove.
 -->
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
@@ -678,8 +679,13 @@ const mountScene = () => {
     wake();
   };
 
+  // Rect cacheado: se mide al entrar y tras scroll/resize, no en cada movimiento.
+  let box: DOMRect | null = null;
+  const invalidateBox = () => {
+    box = null;
+  };
   const locate = (e: PointerEvent) => {
-    const rect = container.getBoundingClientRect();
+    const rect = (box ??= container.getBoundingClientRect());
     pointer.x = e.clientX - rect.left;
     pointer.y = e.clientY - rect.top;
   };
@@ -720,7 +726,13 @@ const mountScene = () => {
   };
 
   container.addEventListener('pointermove', onMove, { passive: true });
-  container.addEventListener('pointerenter', onMove, { passive: true });
+  const onEnter = (e: PointerEvent) => {
+    box = null;
+    onMove(e);
+  };
+  container.addEventListener('pointerenter', onEnter, { passive: true });
+  window.addEventListener('scroll', invalidateBox, { passive: true });
+  window.addEventListener('resize', invalidateBox, { passive: true });
   container.addEventListener('pointerdown', onDown, { passive: true });
   container.addEventListener('pointerup', onUp, { passive: true });
   container.addEventListener('pointercancel', onUp, { passive: true });
@@ -744,7 +756,9 @@ const mountScene = () => {
     resizeObserver.disconnect();
     intersectionObserver.disconnect();
     container.removeEventListener('pointermove', onMove);
-    container.removeEventListener('pointerenter', onMove);
+    container.removeEventListener('pointerenter', onEnter);
+    window.removeEventListener('scroll', invalidateBox);
+    window.removeEventListener('resize', invalidateBox);
     container.removeEventListener('pointerdown', onDown);
     container.removeEventListener('pointerup', onUp);
     container.removeEventListener('pointercancel', onUp);
