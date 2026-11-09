@@ -5,7 +5,7 @@
   (https://github.com/DavidHaz/react-bits/blob/main/LICENSE.md): se puede usar en proyectos,
   pero no revender el componente como tal.
   Cambios del port:
-  - Las tarjetas se pintan con un slot (#item) en lugar de imágenes, para poner Holo Cards.
+  - Las tarjetas se pintan con un slot (#item) en lugar de imágenes, para poner las tarjetas de proyecto.
   - Solo cartas planas (curve = 0, sin caras traseras): suficiente para los presets orbit y wheel.
   - Sin intros animadas ni swap de imágenes. Con prefers-reduced-motion no hay autoplay ni parallax.
   - Se conservan: geometría de los presets, ajuste al contenedor, arrastre con momentum, snap con

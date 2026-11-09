@@ -37,6 +37,15 @@ describe('Hero', () => {
   })
 })
 
+describe('Estado de disponibilidad', () => {
+  it('se muestra como eyebrow con el mismo texto, sin píldora con borde', () => {
+    const eyebrow = mountApp().find('#hero .status-eyebrow')
+    expect(eyebrow.text()).toBe('Disponible para proyectos freelance y empleo')
+    expect(eyebrow.classes()).not.toContain('rounded-full')
+    expect(eyebrow.classes()).not.toContain('border')
+  })
+})
+
 describe('Wordmark del hero', () => {
   it('sin puntero fino o con reduced-motion se ve como texto estático y el nombre completo es accesible', () => {
     const hero = mountApp().find('#hero')
