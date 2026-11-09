@@ -75,3 +75,12 @@ describe('App', () => {
     host.remove()
   })
 })
+
+describe('Tarjetas de proyecto', () => {
+  it('son limpias: sin arte de foil ni canvas WebGL', () => {
+    const projects = mountApp().find('#projects')
+    expect(projects.findAll('.project-card').length).toBeGreaterThan(0)
+    expect(projects.find('canvas').exists()).toBe(false)
+    expect(projects.find('img[src^="data:image/svg"]').exists()).toBe(false)
+  })
+})

@@ -5,7 +5,7 @@ import { motion, useMotionValue, useSpring } from 'motion-v'
 /**
  * Cursor propio hecho con motion-v (gratis; no usa el Cursor de Motion+).
  * Estados: punto (por defecto), anillo en enlaces, contorno que envuelve botones,
- * círculo "Ver" sobre Holo Cards, píldora "Arrastrar" en el carrusel y caret en texto.
+ * círculo "Ver" sobre las tarjetas de proyecto, píldora "Arrastrar" en el carrusel y caret en texto.
  * Solo se activa con puntero fino y hover, y sin prefers-reduced-motion; si no, queda el nativo.
  */
 type CursorState = 'default' | 'link' | 'button' | 'card' | 'drag' | 'text'
