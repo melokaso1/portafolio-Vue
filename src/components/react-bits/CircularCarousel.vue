@@ -10,6 +10,11 @@
   - Sin intros animadas ni swap de imágenes. Con prefers-reduced-motion no hay autoplay ni parallax.
   - Se conservan: geometría de los presets, ajuste al contenedor, arrastre con momentum, snap con
     resorte, rueda horizontal, teclado (flechas / Home / End), depthFade y pausa fuera de pantalla.
+  - Móvil: props `spread` (separación entre cartas) y `fit="card"` (escala solo para que quepa la
+    carta activa; las vecinas asoman por los lados y el contenedor las recorta). El swipe usa
+    pointer events con umbral y `touch-action: pan-y`, así que el scroll vertical no se bloquea.
+  - Con prefers-reduced-motion: mismo carrusel, sin tilt ni parallax, y el cambio de carta es
+    instantáneo (sin resorte ni inercia).
 -->
 <script setup lang="ts" generic="T extends { id: string; title: string }">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
@@ -70,6 +75,8 @@ const props = withDefaults(
     fadeColor?: string
     cornerRadius?: number
     label?: string
+    spread?: number
+    fit?: 'ring' | 'card'
   }>(),
   {
     preset: 'orbit',
@@ -91,6 +98,8 @@ const props = withDefaults(
     fadeColor: '#0E0F11',
     cornerRadius: 16,
     label: 'Carrusel',
+    spread: undefined,
+    fit: 'ring',
   },
 )
 
@@ -107,10 +116,10 @@ const cardH = computed(() => cardW.value / clamp(props.aspectRatio, 0.2, 5))
 const along = computed(() => (layout.value.axis === 'x' ? cardH.value : cardW.value))
 const radius = computed(() => {
   const n = Math.max(count.value, 3)
-  const pitch = (along.value + props.gap) * layout.value.spread
+  const pitch = (along.value + props.gap) * (props.spread ?? layout.value.spread)
   return Math.max(pitch / (2 * Math.sin(Math.PI / n)), along.value * 0.6)
 })
-const tiltValue = computed(() => props.tilt ?? layout.value.tilt)
+const tiltValue = computed(() => (reduced.value ? 0 : (props.tilt ?? layout.value.tilt)))
 const perspectiveValue = computed(() => props.perspective ?? layout.value.perspective)
 
 const rootRef = ref<HTMLDivElement | null>(null)
@@ -164,6 +173,10 @@ const advance = (dt: number, now: number) => {
   let busy = state.drag
   if (state.drag) {
     // la velocidad la fija el arrastre
+  } else if (state.target !== null && reduced.value) {
+    state.angle = state.target
+    state.velocity = 0
+    state.target = null
   } else if (state.target !== null) {
     let remaining = dt
     const damping = 2 * Math.sqrt(SPRING)
@@ -328,7 +341,10 @@ const release = (e: PointerEvent) => {
   const velocity = span > 0.008 ? clamp((last.angle - first.angle) / span, -1400, 1400) : 0
   state.velocity = velocity
   if (Math.abs(velocity) > 60) state.dir = Math.sign(velocity)
-  if (props.snap) {
+  if (reduced.value) {
+    state.velocity = 0
+    state.target = nearest(state.angle + Math.sign(last.angle - press.angle) * step.value * 0.35)
+  } else if (props.snap) {
     const tau = 0.18 + clamp(props.momentum, 0, 1) * 1.5
     state.target = Math.round((state.angle + velocity * tau * 0.55) / step.value) * step.value
   }
@@ -416,9 +432,12 @@ onMounted(() => {
         maxY = Math.max(maxY, p[1] * k)
       }
     }
-    const fit = Math.min(1, width / Math.max(maxX - minX, 1), height / Math.max(maxY - minY, 1))
+    const ringFit = props.fit === 'ring'
+    const fit = ringFit
+      ? Math.min(1, width / Math.max(maxX - minX, 1), height / Math.max(maxY - minY, 1))
+      : Math.min(1, (rect.width * 0.86) / cardW.value, height / cardH.value)
     state.fit = fit
-    const shift = -((minY + maxY) / 2) * fit
+    const shift = ringFit ? -((minY + maxY) / 2) * fit : 0
     stage.style.perspective = `${P}px`
     stage.style.transform = `translate3d(0, ${shift}px, 0) scale(${fit})`
   }
@@ -488,7 +507,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => cleanup?.())
 
-watch([radius, cardW, cardH, tiltValue, perspectiveValue, count], () => {
+watch([radius, cardW, cardH, tiltValue, perspectiveValue, count, () => props.fit], () => {
   measure()
   wake()
 })

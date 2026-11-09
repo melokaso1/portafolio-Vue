@@ -91,3 +91,23 @@ describe('sección de proyectos', () => {
     expect(mountApp().find('#projects a[href="https://github.com/melokaso1"]').exists()).toBe(true)
   })
 })
+
+describe('carrusel de proyectos', () => {
+  it('se usa también en táctil: sin fila con scroll-snap, con swipe y pan-y', () => {
+    const section = mountApp().find('#projects')
+    const region = section.find('[aria-roledescription="carrusel"]')
+    expect(region.exists()).toBe(true)
+    expect(region.classes()).toContain('touch-pan-y')
+    expect(section.find('.snap-x').exists()).toBe(false)
+    expect(section.findAll('[aria-roledescription="diapositiva"]')).toHaveLength(projects.length)
+  })
+
+  it('tiene botones anterior/siguiente y puntos accesibles', async () => {
+    const section = mountApp().find('#projects')
+    expect(section.find('button[aria-label="Proyecto anterior"]').exists()).toBe(true)
+    expect(section.find('button[aria-label="Proyecto siguiente"]').exists()).toBe(true)
+    const dots = section.findAll('[aria-label="Elegir proyecto"] button')
+    expect(dots).toHaveLength(projects.length)
+    expect(dots[0]!.attributes('aria-current')).toBe('true')
+  })
+})

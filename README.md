@@ -48,6 +48,6 @@ Reglas del contenido:
 
 ## Accesibilidad y animaciones
 
-- Con `prefers-reduced-motion` no hay scrub, cursor propio, ni Tech Text: se muestra el estado final estático.
-- En táctil (sin `(hover: hover) and (pointer: fine)`) el cursor es el nativo, el carrusel es una fila con scroll-snap y el fondo de cubos es una retícula estática en CSS.
+- Con `prefers-reduced-motion` no hay scrub, cursor propio, ni Tech Text: se muestra el estado final estático. El carrusel se mantiene sin tilt y cambia de carta al instante.
+- En táctil (sin `(hover: hover) and (pointer: fine)`) el cursor es el nativo, el carrusel se recorre con swipe (o botones anterior/siguiente y puntos) y el fondo de cubos es una retícula estática en CSS.
 - Enlace "Saltar al contenido", foco visible, menú navegable con teclado y contraste AA.
