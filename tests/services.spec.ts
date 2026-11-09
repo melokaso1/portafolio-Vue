@@ -18,4 +18,10 @@ describe('Servicios', () => {
   it('tiene un llamado a contacto', () => {
     expect(mountApp().find('#services a[href="#contact"]').exists()).toBe(true)
   })
+
+  it('los paneles del acordeón usan el contenedor animado (grid 0fr → 1fr)', () => {
+    const panels = mountApp().findAll('#services .svc-panel')
+    expect(panels).toHaveLength(3)
+    expect(panels.every((p) => p.find('.svc-body').exists())).toBe(true)
+  })
 })
