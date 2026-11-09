@@ -1,7 +1,8 @@
 <!--
   Vue Bits (TechText) - https://vue-bits.dev
   Copiado desde el registro oficial: https://vue-bits.dev/r/TechText.json
-  Ajustes locales: prop `align` ('left' | 'center') para alinear el texto a la izquierda como en el diseño (la versión React la trae).
+  Ajustes locales: prop `align` ('left' | 'center') para alinear el texto a la izquierda como en el diseño (la versión React la trae)
+  y prop `fixedSize` para que varias líneas compartan el mismo tamaño de letra.
 -->
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
@@ -41,10 +42,12 @@ interface TechTextProps {
   sweep?: boolean;
   speed?: number;
   align?: 'left' | 'center';
+  /** Tamaño fijo: no se encoge por la altura de la tinta (evita que dos líneas queden de tamaños distintos). */
+  fixedSize?: boolean;
   className?: string;
 }
 
-type Settings = Required<Omit<TechTextProps, 'className' | 'align'>>;
+type Settings = Required<Omit<TechTextProps, 'className' | 'align' | 'fixedSize'>>;
 
 const LABEL_FONT = '10px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
 const FALLOFF_STEPS = 8;
@@ -101,6 +104,7 @@ const props = withDefaults(defineProps<TechTextProps>(), {
   sweep: true,
   speed: 1,
   align: 'center',
+  fixedSize: false,
   className: ''
 });
 
@@ -131,7 +135,8 @@ watch(
     props.draggable,
     props.sweep,
     props.speed,
-    props.align
+    props.align,
+    props.fixedSize
   ],
   () => {
     settings = {
@@ -270,7 +275,7 @@ const mountScene = () => {
     const fit = Math.min(
       1,
       (width * (props.align === 'left' ? 0.98 : 0.9)) / Math.max(m.actualBoundingBoxLeft + m.actualBoundingBoxRight, 1),
-      (height * 0.66) / Math.max(m.actualBoundingBoxAscent + m.actualBoundingBoxDescent, 1)
+      props.fixedSize ? 1 : (height * 0.66) / Math.max(m.actualBoundingBoxAscent + m.actualBoundingBoxDescent, 1)
     );
     const size = s.fontSize * fit;
     setFont(probe, s, size);
@@ -278,7 +283,8 @@ const mountScene = () => {
     const inkWidth = m.actualBoundingBoxLeft + m.actualBoundingBoxRight;
     const inkHeight = m.actualBoundingBoxAscent + m.actualBoundingBoxDescent;
     const x = props.align === 'left' ? m.actualBoundingBoxLeft + 2 : (width - inkWidth) / 2 + m.actualBoundingBoxLeft;
-    const baseline = (height - inkHeight) / 2 + m.actualBoundingBoxAscent;
+    // Con tamaño fijo la línea base va a una altura fija (como texto normal) y no depende de la tinta.
+    const baseline = props.fixedSize ? height * 0.8 : (height - inkHeight) / 2 + m.actualBoundingBoxAscent;
     const next = {
       size,
       baseline,
