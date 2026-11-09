@@ -15,12 +15,22 @@ describe('Lo que resuelvo', () => {
   it('solo cita proyectos que existen en el portafolio', () => {
     const known = projects.map((p) => p.title.toLowerCase())
     for (const proof of solveItems.flatMap((s) => s.proof)) {
-      expect(known.some((t) => t.includes(proof.toLowerCase().split(' ')[0] ?? ''))).toBe(true)
+      expect(known.some((t) => t.startsWith(proof.toLowerCase()))).toBe(true)
     }
   })
 
   it('no usa cifras ni porcentajes inventados', () => {
     const text = mountApp().find('#resuelvo').text()
     expect(text).not.toMatch(/\d+\s*%|\d+x\b/)
+  })
+})
+
+describe('Servicios', () => {
+  it('solo cita proyectos que existen en el portafolio', async () => {
+    const { services } = await import('@/data/services')
+    const known = projects.map((p) => p.title.toLowerCase())
+    for (const ex of services.flatMap((s) => s.examples)) {
+      expect(known.some((t) => t.startsWith(ex.toLowerCase())), ex).toBe(true)
+    }
   })
 })

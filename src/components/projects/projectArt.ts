@@ -1,9 +1,11 @@
 /** Monograma corto por proyecto (como en el Figma v2). */
 export const monograms: Record<string, string> = {
   nodux: 'N',
+  'nexus-odonto-api': 'NX',
+  'nexus-odonto-chatbot': 'AI',
+  healtlab: 'HL',
   'inteligent-inventory': 'IN',
-  agendabot: 'AB',
-  'todo-hexagonal': 'TD',
+  'gestion-mecanica': 'GM',
   'liga-betplay': 'LB',
   'abc-lms': 'LMS',
   'dataset-editor': 'TG',

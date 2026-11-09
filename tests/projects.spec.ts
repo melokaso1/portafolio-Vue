@@ -4,11 +4,6 @@ import * as projectData from '@/data/projects'
 import { otherWork, projects } from '@/data/projects'
 
 const BLOCKED_REPOS = [
-  'InteligentInventoryBackend',
-  'InteligentInventoryFrontend',
-  'InteligentInventoryLLMChatBot',
-  'HEALTLAB_FRONTEND',
-  'HEALTLABS_BACKEND',
   'sonet-automatizacion-demo',
   'proyecto_luxTime',
   'Nodux',
@@ -20,9 +15,11 @@ describe('datos de proyectos', () => {
   it('mantiene el orden acordado', () => {
     expect(projects.map((p) => p.id)).toEqual([
       'nodux',
+      'nexus-odonto-api',
+      'nexus-odonto-chatbot',
+      'healtlab',
       'inteligent-inventory',
-      'agendabot',
-      'todo-hexagonal',
+      'gestion-mecanica',
       'liga-betplay',
       'abc-lms',
       'dataset-editor',
@@ -32,7 +29,6 @@ describe('datos de proyectos', () => {
   it('no incluye notas internas ni proyectos ocultos en el archivo público', () => {
     const data = JSON.stringify(projectData)
     expect(data).not.toMatch(/notaInterna|publicar|PENDIENTE/)
-    expect(data).not.toMatch(/healtlab/i)
   })
 
   it('no incluye sonet-automatizacion-demo', () => {
@@ -55,6 +51,19 @@ describe('datos de proyectos', () => {
       expect(link.url.startsWith('https://')).toBe(true)
       for (const blocked of [...BLOCKED_REPOS, ...BROKEN_DEMOS]) expect(link.url).not.toContain(blocked)
     }
+  })
+
+  it('no incluye proyectos retirados ni cifras de pruebas sin verificar', () => {
+    const data = JSON.stringify(projectData)
+    for (const id of ['agendabot', 'todo-hexagonal', 'transporte-migrations']) expect(data).not.toContain(id)
+    expect(data).not.toMatch(/\d+\s+(archivos de prueba|tests)/i)
+  })
+
+  it('Nexus Odonto ya es público: enlaza a sus repos', () => {
+    const urls = projects.flatMap((p) => p.links.map((l) => l.url))
+    expect(urls).toContain('https://github.com/NexusOdonto/NexusOdontoBackend_Api')
+    expect(urls).toContain('https://github.com/NexusOdonto/NexusOdonto_ChatBot_AI')
+    expect(JSON.stringify(projectData)).not.toMatch(/código es privado/)
   })
 
   it('Nodux va primero y no tiene enlaces (proyecto privado)', () => {
