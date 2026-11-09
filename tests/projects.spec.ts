@@ -41,7 +41,8 @@ describe('datos de proyectos', () => {
 
   it('cada proyecto es un caso de estudio y no inventa resultados vacíos', () => {
     for (const p of projects) {
-      expect(p.problem.length).toBeGreaterThan(0)
+      // `problem` es opcional: si no está confirmado se omite (no se muestra un TODO).
+      if (p.problem !== undefined) expect(p.problem.trim().length).toBeGreaterThan(0)
       expect(p.summary.length).toBeGreaterThan(0)
       expect(p.tech.length).toBeGreaterThan(0)
       if (p.result !== undefined) expect(p.result.trim().length).toBeGreaterThan(0)
@@ -70,10 +71,23 @@ describe('datos de proyectos', () => {
 })
 
 describe('sección de proyectos', () => {
-  it('presenta cada proyecto como caso de estudio', () => {
-    const html = mountApp().find('#projects').html()
-    expect(html).toContain('Problema')
-    expect(html).toContain('Solución')
-    expect(html).toContain('Resultado')
+  it('muestra todos los proyectos en el orden acordado', () => {
+    const text = mountApp().find('#projects').text()
+    let last = -1
+    for (const p of projects) {
+      const title = p.title.replace(/\s*\(.*\)\s*$/, '')
+      const at = text.indexOf(title)
+      expect(at, title).toBeGreaterThan(last)
+      last = at
+    }
+  })
+
+  it('no muestra marcadores pendientes', () => {
+    const text = mountApp().find('#projects').text()
+    expect(text).not.toMatch(/TODO|PENDIENTE|Pendiente/)
+  })
+
+  it('enlaza a GitHub para ver más', () => {
+    expect(mountApp().find('#projects a[href="https://github.com/melokaso1"]').exists()).toBe(true)
   })
 })

@@ -14,3 +14,12 @@ if (typeof window !== 'undefined' && typeof window.matchMedia !== 'function') {
     dispatchEvent: () => false,
   })
 }
+
+/** jsdom no trae ResizeObserver (lo usan Branched Menu y el carrusel). */
+if (typeof window !== 'undefined' && typeof window.ResizeObserver === 'undefined') {
+  window.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  } as unknown as typeof ResizeObserver
+}
