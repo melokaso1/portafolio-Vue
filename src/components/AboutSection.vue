@@ -17,7 +17,7 @@ import { aboutParagraphs, profileFacts } from '@/data/about'
         <dl class="space-y-1.5">
           <div v-for="fact in profileFacts" :key="fact.key" class="flex flex-wrap gap-x-2">
             <dt class="text-cyan">"{{ fact.key }}":</dt>
-            <dd :class="fact.key === 'status' ? 'text-green' : 'text-text'">"{{ fact.value }}"</dd>
+            <dd :class="fact.key === 'estado' ? 'text-green' : 'text-text'">"{{ fact.value }}"</dd>
           </div>
         </dl>
       </div>

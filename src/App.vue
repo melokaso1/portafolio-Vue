@@ -6,7 +6,6 @@ import SolveSection from './components/SolveSection.vue'
 import ProjectsSection from './components/ProjectsSection.vue'
 import ServicesSection from './components/ServicesSection.vue'
 import SkillsSection from './components/SkillsSection.vue'
-import LearningSection from './components/LearningSection.vue'
 import AboutSection from './components/AboutSection.vue'
 import ContactSection from './components/ContactSection.vue'
 import SiteFooter from './components/SiteFooter.vue'
@@ -29,7 +28,6 @@ import SiteFooter from './components/SiteFooter.vue'
       <ProjectsSection />
       <ServicesSection />
       <SkillsSection />
-      <LearningSection />
       <AboutSection />
       <ContactSection />
     </main>

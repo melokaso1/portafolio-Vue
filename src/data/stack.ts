@@ -1,19 +1,21 @@
-import type { LearningItem, SkillGroup } from '@/types'
+import type { SkillGroup } from '@/types'
 
-export const skillGroups: SkillGroup[] = [
-  { category: 'Backend', skills: ['C#', '.NET', 'Python', 'Node.js', 'FastAPI'] },
-  { category: 'Bases de datos', skills: ['PostgreSQL', 'Oracle', 'MySQL', 'EF Core', 'Almacenamiento JSON'] },
-  { category: 'Arquitectura', skills: ['Clean Architecture', 'Hexagonal', 'REST', 'JWT', 'RBAC'] },
-  { category: 'Frontend', skills: ['Vue', 'React', 'TypeScript', 'JavaScript', 'Blazor', 'Tailwind CSS', 'Vite'] },
-  { category: 'Herramientas', skills: ['Git', 'GitHub', 'Docker', 'pnpm', 'VS Code', 'Cursor', 'n8n'] },
-  { category: 'Idiomas', skills: ['Español (nativo)', 'Inglés B2'] },
+/** Stack principal (lo que se vende primero). */
+export const coreStack: { name: string; detail: string }[] = [
+  { name: '.NET / C#', detail: 'ASP.NET Core, Minimal APIs, EF Core' },
+  { name: 'SQL', detail: 'PostgreSQL, Oracle, MySQL' },
+  { name: 'Docker', detail: 'Entornos locales y despliegue' },
+  { name: 'Git', detail: 'GitHub, pull requests y revisión de código' },
 ]
 
-export const learningItems: LearningItem[] = [
-  { id: 'dotnet', title: 'C# y .NET', subtitle: 'APIs limpias y hexagonales', status: 'completed' },
-  { id: 'efcore', title: 'EF Core y PostgreSQL', subtitle: 'Migraciones y persistencia', status: 'completed' },
-  { id: 'react-ts', title: 'React y TypeScript', subtitle: 'SPA y paneles de administración', status: 'completed' },
-  { id: 'fastapi-langgraph', title: 'FastAPI y LangGraph', subtitle: 'Flujos de chatbot con IA', status: 'completed' },
-  { id: 'nodejs', title: 'Node.js y Express', subtitle: 'REST APIs', status: 'in-progress' },
-  { id: 'devops', title: 'Docker y DevOps', subtitle: 'Pipelines de despliegue', status: 'in-progress' },
+/** Lo que estoy aprendiendo ahora. */
+export const learningNow: string[] = ['Go', 'Java']
+
+/** Otras herramientas con las que he trabajado en proyectos del portafolio. */
+export const skillGroups: SkillGroup[] = [
+  { category: 'Arquitectura', skills: ['Clean Architecture', 'Hexagonal', 'REST', 'JWT', 'RBAC'] },
+  { category: 'Backend', skills: ['Python', 'FastAPI', 'Node.js'] },
+  { category: 'Frontend', skills: ['Vue', 'React', 'TypeScript', 'Blazor', 'Tailwind CSS'] },
+  { category: 'Automatización', skills: ['n8n', 'Bots de Telegram', 'LangGraph'] },
+  { category: 'Idiomas', skills: ['Español (nativo)', 'Inglés B2'] },
 ]

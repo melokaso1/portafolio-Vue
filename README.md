@@ -34,7 +34,7 @@ Cada sección tiene su archivo de datos en `src/data/`:
 - Navegación: `nav.ts`
 - Proyectos: `projects.ts` (casos de estudio: problema, qué hizo, stack y resultado opcional). Es público y va en el bundle: no poner notas internas ni proyectos ocultos.
 - Servicios: `services.ts`
-- Stack y aprendizaje: `stack.ts`
+- Stack (principal, aprendiendo y otras herramientas): `stack.ts`
 - Sobre mí: `about.ts`
 
 Reglas del contenido:
