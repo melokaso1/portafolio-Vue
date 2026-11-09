@@ -4,7 +4,8 @@
   Ajustes locales (rendimiento y cursor):
   - El transform se escribe directo en el elemento desde un rAF con interpolación (sin estado
     reactivo ni re-render de Vue por movimiento, sin transición CSS que desfase al cursor).
-  - Listener pasivo de pointermove; el rect del contenedor (sin transform) se cachea y solo se
+  - Sin listener propio: usa el seguimiento compartido (usePointer, un listener y un rAF para
+    todos los efectos); el rect del contenedor (sin transform) se cachea y solo se
     vuelve a medir tras scroll o resize.
   - Prop maxOffset: tope del desplazamiento para no invadir elementos vecinos.
   - Publica el desplazamiento actual en magnetRegistry (lo usa el cursor propio).
@@ -20,6 +21,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, watch, useTemplateRef } from 'vue';
 import { magnetOffsets } from './magnetRegistry';
+import { subscribePointer, type PointerState } from '@/composables/usePointer';
 
 interface Props {
   padding?: number;
@@ -50,6 +52,7 @@ let rect: DOMRect | null = null;
 const target = { x: 0, y: 0 };
 const current = { x: 0, y: 0 };
 let raf = 0;
+let offPointer: (() => void) | undefined;
 
 const clamp = (v: number) => Math.max(-props.maxOffset, Math.min(props.maxOffset, v));
 
@@ -73,15 +76,15 @@ const schedule = () => {
   if (!raf) raf = requestAnimationFrame(tick);
 };
 
-const handleMove = (e: PointerEvent) => {
-  if (!magnetRef.value || props.disabled || e.pointerType !== 'mouse') return;
+const handleMove = (e: Readonly<PointerState>) => {
+  if (!magnetRef.value || props.disabled) return;
   rect ??= magnetRef.value.getBoundingClientRect();
   const { left, top, width, height } = rect;
   const centerX = left + width / 2;
   const centerY = top + height / 2;
-  const inside = Math.abs(centerX - e.clientX) < width / 2 + props.padding && Math.abs(centerY - e.clientY) < height / 2 + props.padding;
-  const nx = inside ? clamp((e.clientX - centerX) / props.magnetStrength) : 0;
-  const ny = inside ? clamp((e.clientY - centerY) / props.magnetStrength) : 0;
+  const inside = e.inside && Math.abs(centerX - e.x) < width / 2 + props.padding && Math.abs(centerY - e.y) < height / 2 + props.padding;
+  const nx = inside ? clamp((e.x - centerX) / props.magnetStrength) : 0;
+  const ny = inside ? clamp((e.y - centerY) / props.magnetStrength) : 0;
   if (nx !== target.x || ny !== target.y) {
     target.x = nx;
     target.y = ny;
@@ -93,14 +96,14 @@ const invalidate = () => {
 };
 
 onMounted(() => {
-  window.addEventListener('pointermove', handleMove, { passive: true });
+  offPointer = subscribePointer(handleMove);
   window.addEventListener('scroll', invalidate, { passive: true });
   window.addEventListener('resize', invalidate, { passive: true });
 });
 
 onUnmounted(() => {
   cancelAnimationFrame(raf);
-  window.removeEventListener('pointermove', handleMove);
+  offPointer?.();
   window.removeEventListener('scroll', invalidate);
   window.removeEventListener('resize', invalidate);
 });
