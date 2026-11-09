@@ -9,3 +9,9 @@ export const navLinks: NavLink[] = [
   { label: 'Sobre mí', id: 'about' },
   { label: 'Contacto', id: 'contact' },
 ]
+
+/** Grupos del Branched Menu (rediseño v2). */
+export const navGroups: { label: string; ids: string[] }[] = [
+  { label: 'Trabajo', ids: ['resuelvo', 'projects', 'services'] },
+  { label: 'Perfil', ids: ['skills', 'about', 'contact'] },
+]
