@@ -146,16 +146,7 @@ export const projects: Project[] = [
       { label: 'Demo en vivo', url: 'https://abc-curses.netlify.app/' },
     ],
   },
-  {
-    id: 'dataset-editor',
-    title: 'TrendGear Analytics (datasetEditorApp)',
-    problem: 'Explorar y editar datos de pedidos con KPIs y gráficos.',
-    summary:
-      'Dashboard de analítica de pedidos con CRUD contra una API REST (MockAPI), KPIs, gráficos de ventas por categoría y por método de pago, y búsqueda de registros.',
-    highlights: ['CRUD con fetch (GET / POST / PUT / DELETE) y gráficos hechos a mano, sin frameworks.'],
-    tech: ['JavaScript', 'HTML', 'CSS', 'MockAPI'],
-    links: [{ label: 'Repositorio', url: 'https://github.com/melokaso1/datasetEditorApp' }],
-  },
+
 ]
 
 /** Otros trabajos conservados del portafolio anterior, en formato compacto. */
