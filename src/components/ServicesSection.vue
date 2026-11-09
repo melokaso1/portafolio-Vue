@@ -36,8 +36,8 @@ const open = ref<string | null>(services[0]?.id ?? null)
                 <template #toggleicon><span class="hidden" /></template>
               </AccordionHeader>
             </h3>
-            <AccordionContent unstyled>
-              <div class="pb-6 pl-10 pr-4 lg:pl-[60px]">
+            <AccordionContent unstyled class="svc-panel" :pt="{ transition: { name: 'svc' } }">
+              <div class="svc-body pb-6 pl-10 pr-4 lg:pl-[60px]">
                 <p class="max-w-[640px] text-base leading-relaxed text-muted">{{ service.description }}</p>
                 <a :href="hero.primaryCta.href" class="link mt-3 inline-block text-sm">{{ hero.primaryCta.label }} <span aria-hidden="true">→</span></a>
               </div>
@@ -50,6 +50,16 @@ const open = ref<string | null>(services[0]?.id ?? null)
 </template>
 
 <style scoped>
+.svc-row {
+  transition: color 0.2s ease;
+}
+.svc-row .svc-title {
+  transition: color 0.2s ease;
+}
+.svc-row:hover .svc-title,
+.svc-row:focus-visible .svc-title {
+  color: rgb(var(--accent));
+}
 .svc-row::before {
   content: attr(data-n);
   font-family: 'IBM Plex Mono', ui-monospace, monospace;
@@ -57,22 +67,79 @@ const open = ref<string | null>(services[0]?.id ?? null)
   color: rgb(var(--muted));
   grid-column: 1;
   grid-row: 1;
+  transition: color 0.2s ease;
 }
+.svc-row:hover::before {
+  color: rgb(var(--accent));
+}
+/* Ícono +/−: gira media vuelta al abrir/cerrar. */
 .svc-row::after {
   content: '+';
   grid-column: 3;
   grid-row: 1;
-  text-align: right;
+  justify-self: end;
+  display: inline-block;
+  width: 1em;
+  text-align: center;
   font-size: 20px;
+  line-height: 1;
   color: rgb(var(--muted));
+  transition:
+    transform 0.3s ease-out,
+    color 0.2s ease;
 }
 @media (min-width: 1024px) {
   .svc-row::after {
     grid-column: 4;
   }
 }
+.svc-row:hover::after {
+  color: rgb(var(--accent));
+}
 .svc-row[aria-expanded='true']::after {
   content: '−';
   color: rgb(var(--ink));
+  transform: rotate(180deg);
+}
+.svc-row[aria-expanded='true']:hover::after {
+  color: rgb(var(--accent));
+}
+
+/* Panel: altura con grid-template-rows 0fr → 1fr (sin medir en JS) + fundido y leve desplazamiento. */
+.svc-panel {
+  display: grid;
+  grid-template-rows: 1fr;
+}
+.svc-panel > :deep(div) {
+  min-height: 0;
+  overflow: hidden;
+}
+.svc-body {
+  transition:
+    transform 0.3s ease-out,
+    opacity 0.3s ease-out;
+}
+.svc-enter-active,
+.svc-leave-active {
+  transition:
+    grid-template-rows 0.3s ease-out,
+    opacity 0.3s ease-out;
+}
+.svc-enter-from,
+.svc-leave-to {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+.svc-enter-from .svc-body,
+.svc-leave-to .svc-body {
+  transform: translateY(-6px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .svc-row::after,
+  .svc-body,
+  .svc-enter-active,
+  .svc-leave-active {
+    transition: none;
+  }
 }
 </style>
