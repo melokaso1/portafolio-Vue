@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { mountApp } from './helpers'
 import * as projectData from '@/data/projects'
-import { leadership, otherWork, projects } from '@/data/projects'
+import { otherWork, projects } from '@/data/projects'
 
 const BLOCKED_REPOS = [
   'InteligentInventoryBackend',
@@ -19,9 +19,10 @@ const BROKEN_DEMOS = ['nexusodonto.chatcampuslands.com', 'luxtime-luxury.netlify
 describe('datos de proyectos', () => {
   it('mantiene el orden acordado', () => {
     expect(projects.map((p) => p.id)).toEqual([
+      'nodux',
       'inteligent-inventory',
-      'todo-hexagonal',
       'agendabot',
+      'todo-hexagonal',
       'liga-betplay',
       'abc-lms',
       'dataset-editor',
@@ -55,8 +56,16 @@ describe('datos de proyectos', () => {
     }
   })
 
-  it('Nodux no tiene enlaces', () => {
-    expect(JSON.stringify(leadership)).not.toMatch(/https?:\/\//)
+  it('Nodux va primero y no tiene enlaces (proyecto privado)', () => {
+    const nodux = projects[0]
+    expect(nodux?.id).toBe('nodux')
+    expect(nodux?.links).toEqual([])
+  })
+
+  it('hay entre 2 y 3 casos destacados', () => {
+    const featured = projects.filter((p) => p.featured)
+    expect(featured.length).toBeGreaterThanOrEqual(2)
+    expect(featured.length).toBeLessThanOrEqual(3)
   })
 })
 
@@ -64,6 +73,7 @@ describe('sección de proyectos', () => {
   it('presenta cada proyecto como caso de estudio', () => {
     const html = mountApp().find('#projects').html()
     expect(html).toContain('Problema')
-    expect(html).toContain('Qué hice')
+    expect(html).toContain('Solución')
+    expect(html).toContain('Resultado')
   })
 })

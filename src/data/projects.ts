@@ -1,4 +1,4 @@
-import type { LeadershipItem, OtherWork, Project } from '@/types'
+import type { OtherWork, Project } from '@/types'
 
 /**
  * Proyectos del portafolio en formato caso de estudio. Único archivo a editar para cambiar textos.
@@ -8,12 +8,29 @@ import type { LeadershipItem, OtherWork, Project } from '@/types'
  *   Nada de notas internas ni proyectos ocultos.
  * - Solo datos confirmados en el README o en el código de cada repo. Nada inventado.
  * - Solo enlaces a repos públicos y revisados. Sin credenciales ni valores de .env.
- * - `result` se deja sin definir hasta que Alejandro confirme un resultado real.
- * - El orden del arreglo es el orden en pantalla.
+ * - `result` se deja sin definir hasta que Alejandro confirme un resultado real
+ *   (en los casos destacados se ve un TODO visible mientras tanto).
+ * - El orden del arreglo es el orden en pantalla. Los `featured` van primero (Nodux primero).
  */
 export const projects: Project[] = [
   {
+    id: 'nodux',
+    title: 'Nodux',
+    context: 'Producto privado · Líder de equipo',
+    featured: true,
+    // TODO: Alejandro debe describir el problema de negocio que resuelve Nodux (sin datos internos).
+    problem: 'TODO: describir el problema de negocio que resuelve Nodux.',
+    summary:
+      'Lidero el equipo de desarrollo de un producto privado: planifico tareas, reviso pull requests y coordino el trabajo de frontend, backend, QA y DevOps.',
+    highlights: [],
+    // TODO: confirmar el stack público de Nodux (el equipo trabaja el backend en .NET / C#).
+    tech: ['C#', '.NET'],
+    // Sin enlaces: el proyecto es privado.
+    links: [],
+  },
+  {
     id: 'inteligent-inventory',
+    featured: true,
     title: 'Inventario inteligente (El Plonsazo)',
     context: 'Proyecto académico',
     problem: 'Gestionar inventario, ventas y facturación en un solo sistema, y permitir que los clientes compren por chat.',
@@ -28,6 +45,21 @@ export const projects: Project[] = [
     links: [],
   },
   {
+    id: 'agendabot',
+    title: 'AgendaBot',
+    featured: true,
+    context: 'Proyecto en pareja',
+    problem: 'Agendar y gestionar citas desde un chat de Telegram, usando Google Sheets como base de datos.',
+    summary:
+      'Bot de Telegram hecho con n8n para agendar, consultar, reprogramar, cancelar y completar citas desde un chat, con Google Sheets como base de datos.',
+    highlights: [
+      'Registro automático de usuarios y sesiones por ID de Telegram para mantener el contexto de la conversación.',
+      'Ciclo completo de citas: agendar, consultar, reprogramar, cancelar y marcar como completada.',
+    ],
+    tech: ['n8n', 'Telegram Bot API', 'Google Sheets API'],
+    links: [{ label: 'Repositorio', url: 'https://github.com/melokaso1/Proyecto_IA_Nivel1_EscobarAlejandro_Medina_Tomas' }],
+  },
+  {
     id: 'todo-hexagonal',
     title: 'ToDo - Arquitectura hexagonal',
     problem: 'Mostrar la arquitectura hexagonal en la práctica con una API de tareas pequeña y completa.',
@@ -39,20 +71,6 @@ export const projects: Project[] = [
     ],
     tech: ['C#', '.NET 10', 'Minimal APIs', 'EF Core', 'PostgreSQL', 'Vue 3', 'TypeScript', 'Vite'],
     links: [],
-  },
-  {
-    id: 'agendabot',
-    title: 'AgendaBot',
-    context: 'Proyecto en pareja',
-    problem: 'Agendar y gestionar citas desde un chat de Telegram, usando Google Sheets como base de datos.',
-    summary:
-      'Bot de Telegram hecho con n8n para agendar, consultar, reprogramar, cancelar y completar citas desde un chat, con Google Sheets como base de datos.',
-    highlights: [
-      'Registro automático de usuarios y sesiones por ID de Telegram para mantener el contexto de la conversación.',
-      'Ciclo completo de citas: agendar, consultar, reprogramar, cancelar y marcar como completada.',
-    ],
-    tech: ['n8n', 'Telegram Bot API', 'Google Sheets API'],
-    links: [{ label: 'Repositorio', url: 'https://github.com/melokaso1/Proyecto_IA_Nivel1_EscobarAlejandro_Medina_Tomas' }],
   },
   {
     id: 'liga-betplay',
@@ -98,17 +116,6 @@ export const projects: Project[] = [
     highlights: ['CRUD con fetch (GET / POST / PUT / DELETE) y gráficos hechos a mano, sin frameworks.'],
     tech: ['JavaScript', 'HTML', 'CSS', 'MockAPI'],
     links: [{ label: 'Repositorio', url: 'https://github.com/melokaso1/datasetEditorApp' }],
-  },
-]
-
-/** Liderazgo. Sin enlaces ni datos internos (el proyecto es privado). */
-export const leadership: LeadershipItem[] = [
-  {
-    id: 'nodux',
-    title: 'Nodux',
-    role: 'Líder de equipo',
-    summary:
-      'Lidero el equipo de desarrollo de un producto privado: planifico tareas, reviso pull requests y coordino el trabajo de frontend, backend, QA y DevOps.',
   },
 ]
 

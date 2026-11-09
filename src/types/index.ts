@@ -11,8 +11,10 @@ export interface Project {
   context?: string
   /** Problema que resuelve el proyecto. */
   problem: string
-  /** Qué se construyó. */
+  /** Solución: qué se construyó. */
   summary: string
+  /** Caso destacado (se muestra grande, con Problema / Solución / Resultado). */
+  featured?: boolean
   highlights: string[]
   tech: string[]
   /** Resultado real. Se omite si no está confirmado. */
