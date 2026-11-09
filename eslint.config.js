@@ -14,10 +14,12 @@ export default defineConfigWithVueTs(
   },
   {
     // Componentes copiados de Vue Bits: se mantienen lo más parecidos posible al original.
-    files: ['src/components/vue-bits/**/*.vue'],
+    files: ['src/components/vue-bits/**/*.vue', 'src/components/react-bits/**/*.vue'],
     rules: {
       'vue/multi-word-component-names': 'off',
       'vue/attributes-order': 'off',
+      // Copias del registro de Vue Bits: se mantienen sus props opcionales sin default.
+      'vue/require-default-prop': 'off',
     },
   },
 )
