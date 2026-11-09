@@ -36,3 +36,12 @@ describe('Hero', () => {
     expect(hero.find('a[href*="github.com/melokaso1"]').exists()).toBe(true)
   })
 })
+
+describe('Estado de disponibilidad', () => {
+  it('se muestra como eyebrow con el mismo texto, sin píldora con borde', () => {
+    const eyebrow = mountApp().find('#hero .status-eyebrow')
+    expect(eyebrow.text()).toBe('Disponible para proyectos freelance y empleo')
+    expect(eyebrow.classes()).not.toContain('rounded-full')
+    expect(eyebrow.classes()).not.toContain('border')
+  })
+})

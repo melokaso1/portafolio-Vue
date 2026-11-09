@@ -34,8 +34,11 @@ const wordmark = ['Alejandro', 'Escobar']
 
     <div class="shell relative grid items-start gap-10 lg:grid-cols-[minmax(0,580px)_minmax(0,460px)]">
       <div class="pointer-events-none relative z-10 [&_a]:pointer-events-auto">
-        <p class="inline-flex items-center gap-2 rounded-full border border-line bg-bg px-3 py-1.5 text-[13px] text-muted">
-          <span class="h-1.5 w-1.5 rounded-full bg-ink" aria-hidden="true" />
+        <!-- Eyebrow de estado: texto mono gris con un punto ámbar (pulso suave, sin pulso con reduced-motion). -->
+        <p class="status-eyebrow flex items-center gap-2.5 font-mono text-[11px] tracking-[0.02em] text-muted sm:text-xs sm:tracking-[0.04em] lg:text-[13px]">
+          <span class="status-dot relative inline-flex h-1.5 w-1.5 shrink-0" aria-hidden="true">
+            <span class="absolute inset-0 rounded-full bg-accent" />
+          </span>
           {{ hero.badge }}
         </p>
 
@@ -91,6 +94,32 @@ const wordmark = ['Alejandro', 'Escobar']
 </template>
 
 <style scoped>
+.status-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: rgb(var(--accent));
+  opacity: 0;
+  animation: status-pulse 2.4s ease-out infinite;
+}
+@keyframes status-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  70%,
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .status-dot::after {
+    animation: none;
+  }
+}
+
 .hero-fade {
   -webkit-mask-image: linear-gradient(to bottom, #000 35%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000 35%, transparent 100%);
