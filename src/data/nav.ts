@@ -5,13 +5,13 @@ export const navLinks: NavLink[] = [
   { label: 'Lo que resuelvo', id: 'resuelvo' },
   { label: 'Proyectos', id: 'projects' },
   { label: 'Servicios', id: 'services' },
-  { label: 'Stack', id: 'skills' },
-  { label: 'Sobre mí', id: 'about' },
+  // Stack y Sobre mí comparten la sección 04 (#skills contiene #about): un solo ítem.
+  { label: 'Stack · Sobre mí', id: 'skills' },
   { label: 'Contacto', id: 'contact' },
 ]
 
 /** Grupos del Branched Menu (rediseño v2). */
 export const navGroups: { label: string; ids: string[] }[] = [
   { label: 'Trabajo', ids: ['resuelvo', 'projects', 'services'] },
-  { label: 'Perfil', ids: ['skills', 'about', 'contact'] },
+  { label: 'Perfil', ids: ['skills', 'contact'] },
 ]
