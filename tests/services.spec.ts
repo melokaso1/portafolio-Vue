@@ -5,7 +5,7 @@ describe('Servicios', () => {
   it('muestra los 3 servicios freelance acordados', () => {
     const titles = mountApp()
       .find('#services')
-      .findAll('h3')
+      .findAll('h3 .svc-title')
       .map((h) => h.text())
     expect(titles).toEqual(['APIs REST a la medida', 'Backend para agencias', 'Mantenimiento de sistemas .NET'])
   })

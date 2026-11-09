@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue'
-import PcIllustration from './pc/PcIllustration.vue'
 import { hero } from '@/data/hero'
 import { personalInfo } from '@/data/profile'
 import { useFinePointer } from '@/composables/useFinePointer'
 
-const Cubes = defineAsyncComponent(() => import('./vue-bits/Cubes.vue'))
 const TechText = defineAsyncComponent(() => import('./vue-bits/TechText.vue'))
 const fine = useFinePointer()
 
@@ -14,33 +12,16 @@ const wordmark = ['Alejandro', 'Escobar']
 </script>
 
 <template>
-  <section id="hero" class="relative overflow-hidden pb-16 pt-[92px] lg:min-h-[640px] lg:pb-12 lg:pt-[120px]" aria-labelledby="hero-title">
-    <!-- Fondo: Cubes (Vue Bits) con puntero fino; si no, una retícula estática punteada. -->
-    <div class="hero-fade pointer-events-auto absolute inset-0 -z-0" aria-hidden="true">
-      <div v-if="fine" class="absolute inset-x-0 top-0">
-        <Cubes
-          :grid-size="20"
-          :max-angle="40"
-          :radius="3"
-          :cell-gap="14"
-          border-style="1px dashed #2A2D32"
-          face-color="#0E0F11"
-          :auto-animate="false"
-          :ripple-on-click="false"
-        />
-      </div>
-      <div v-else class="cube-grid absolute inset-0" />
-    </div>
-
-    <div class="shell relative grid items-start gap-10 lg:grid-cols-[minmax(0,580px)_minmax(0,460px)]">
-      <div class="pointer-events-none relative z-10 [&_a]:pointer-events-auto">
+  <section id="hero" class="relative pb-16 pt-[92px] lg:min-h-[600px] lg:pb-12 lg:pt-[120px]" aria-labelledby="hero-title">
+    <div class="shell relative">
+      <div class="relative z-10 max-w-[760px]">
         <p class="inline-flex items-center gap-2 rounded-full border border-line bg-bg px-3 py-1.5 text-[13px] text-muted">
           <span class="h-1.5 w-1.5 rounded-full bg-ink" aria-hidden="true" />
           {{ hero.badge }}
         </p>
 
         <p class="sr-only">{{ personalInfo.name }}</p>
-        <div class="pointer-events-auto mt-5 lg:mt-6" aria-hidden="true">
+        <div class="mt-5 lg:mt-6" aria-hidden="true">
           <template v-if="fine">
             <div v-for="word in wordmark" :key="word" class="h-[90px] lg:h-[116px]">
               <TechText
@@ -82,24 +63,6 @@ const wordmark = ['Alejandro', 'Escobar']
           </a>
         </div>
       </div>
-
-      <div v-reveal class="pointer-events-none relative z-10 mx-auto w-full max-w-[300px] lg:mt-[-20px] lg:max-w-none">
-        <PcIllustration :stage="0" />
-      </div>
     </div>
   </section>
 </template>
-
-<style scoped>
-.hero-fade {
-  -webkit-mask-image: linear-gradient(to bottom, #000 35%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 35%, transparent 100%);
-}
-.cube-grid {
-  background-image:
-    linear-gradient(to right, rgb(var(--line)) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(var(--line)) 1px, transparent 1px);
-  background-size: 57px 57px;
-  opacity: 0.55;
-}
-</style>
